@@ -19,7 +19,8 @@
     "check": "npm run typecheck && biome ci . && vitest run && vite build"
   },
   "dependencies": {
-    "lit": "^3.3.3"
+    "lit": "^3.3.3",
+    "minisearch": "^7.2.0"
   },
   "devDependencies": {
     "@biomejs/biome": "^2.5.3",
