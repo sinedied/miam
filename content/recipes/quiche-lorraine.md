@@ -38,8 +38,6 @@ ingredients:
     unit: pincée
 ---
 
-## Préparation
-
 1. Préchauffez le four à 200°C (thermostat 6-7).
 2. Étalez la pâte brisée dans un moule à tarte et piquez le fond à la fourchette.
 3. Faites revenir les lardons quelques minutes à la poêle jusqu'à ce qu'ils soient dorés, puis égouttez-les.

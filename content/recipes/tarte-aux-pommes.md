@@ -32,8 +32,6 @@ ingredients:
     unit: cuillère à soupe
 ---
 
-## Préparation
-
 1. Préchauffez le four à 200°C (thermostat 6-7) et déroulez la pâte feuilletée dans un moule à tarte.
 2. Épluchez les pommes, coupez-les en deux, retirez le cœur, puis émincez-les finement.
 3. Disposez les tranches de pommes en rosace sur la pâte.

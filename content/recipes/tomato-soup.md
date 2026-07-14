@@ -38,8 +38,6 @@ ingredients:
     unit: pinch
 ---
 
-## Instructions
-
 1. Heat the olive oil in a large pot over medium heat and sauté the chopped onion until soft and translucent, about 5 minutes.
 2. Add the minced garlic and cook for another minute until fragrant.
 3. Pour in the crushed tomatoes and vegetable stock, then stir in the sugar and salt.

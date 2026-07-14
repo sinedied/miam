@@ -5,10 +5,7 @@ const STORAGE_KEY = "miam:locale";
 
 const messages = {
   en: {
-    brandTagline: "My Intelligent Assistant for Meals",
-    catalogEyebrow: "The family pantry",
-    catalogTitle: "Recipes worth making again.",
-    catalogIntro: "Reliable favourites, kept together and easy to find.",
+    recipesHeading: "Recipes",
     searchLabel: "Search recipes",
     searchPlaceholder: "Name, ingredient, or tag",
     clearSearch: "Clear search",
@@ -18,6 +15,7 @@ const messages = {
     noResultsTitle: "Nothing in this cupboard.",
     noResultsBody: "Try another recipe name, ingredient, or tag.",
     languageLabel: "Language",
+    settings: "Settings",
     english: "English",
     french: "Français",
     openRecipe: "Open {title}",
@@ -38,10 +36,7 @@ const messages = {
     skipToContent: "Skip to recipes",
   },
   fr: {
-    brandTagline: "Mon assistant intelligent pour les repas",
-    catalogEyebrow: "Le garde-manger familial",
-    catalogTitle: "Des recettes à refaire encore.",
-    catalogIntro: "Les recettes préférées, réunies et faciles à retrouver.",
+    recipesHeading: "Recettes",
     searchLabel: "Rechercher des recettes",
     searchPlaceholder: "Nom, ingrédient ou étiquette",
     clearSearch: "Effacer la recherche",
@@ -51,6 +46,7 @@ const messages = {
     noResultsTitle: "Rien dans ce placard.",
     noResultsBody: "Essayez un autre nom, ingrédient ou une autre étiquette.",
     languageLabel: "Langue",
+    settings: "Paramètres",
     english: "English",
     french: "Français",
     openRecipe: "Ouvrir {title}",

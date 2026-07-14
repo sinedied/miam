@@ -23,15 +23,16 @@ export class RecipeCard extends LitElement {
         border: 1px solid var(--color-line);
         border-radius: var(--radius-md);
         background: var(--color-surface);
-        box-shadow: var(--shadow-card);
         transition:
-          translate 180ms ease,
-          box-shadow 180ms ease;
+          translate 160ms ease,
+          box-shadow 160ms ease,
+          border-color 160ms ease;
       }
 
       article:hover {
-        translate: 0 -0.25rem;
-        box-shadow: 0 1px 0 rgb(29 41 34 / 10%), 0 22px 45px rgb(29 41 34 / 12%);
+        translate: 0 -0.2rem;
+        border-color: var(--color-ink-muted);
+        box-shadow: var(--shadow-card);
       }
 
       a {
@@ -44,7 +45,7 @@ export class RecipeCard extends LitElement {
       .image-wrap {
         position: relative;
         overflow: hidden;
-        aspect-ratio: 4 / 3;
+        aspect-ratio: 16 / 10;
         border-bottom: 1px solid var(--color-line);
         background: var(--color-surface-strong);
       }
@@ -58,32 +59,33 @@ export class RecipeCard extends LitElement {
       }
 
       article:hover img {
-        scale: 1.035;
+        scale: 1.04;
       }
 
       .language {
         position: absolute;
-        top: var(--space-3);
-        right: var(--space-3);
-        padding: 0.35rem 0.5rem;
-        border: 1px solid rgb(255 255 255 / 55%);
+        top: var(--space-2);
+        right: var(--space-2);
+        padding: 0.25rem 0.4rem;
         border-radius: var(--radius-sm);
         color: var(--color-surface);
         background: rgb(29 41 34 / 78%);
         backdrop-filter: blur(8px);
+        font-size: 0.6rem;
       }
 
       .body {
         display: grid;
         align-content: start;
-        gap: var(--space-3);
-        padding: var(--space-5);
+        gap: 0.4rem;
+        padding: var(--space-3);
       }
 
       .tags {
         display: flex;
         flex-wrap: wrap;
-        gap: 0.35rem;
+        gap: 0.3rem;
+        font-size: 0.62rem;
       }
 
       .tag {
@@ -97,48 +99,47 @@ export class RecipeCard extends LitElement {
       h2 {
         margin: 0;
         font-family: var(--font-display);
-        font-size: clamp(1.55rem, 3vw, 2rem);
-        letter-spacing: -0.03em;
-        line-height: 1.05;
+        font-size: clamp(1rem, 1.6vw, 1.15rem);
+        letter-spacing: -0.02em;
+        line-height: 1.15;
       }
 
       .description {
+        display: -webkit-box;
         margin: 0;
+        overflow: hidden;
         color: var(--color-ink-muted);
-        font-size: 0.94rem;
-        line-height: 1.55;
+        font-size: 0.8rem;
+        line-height: 1.45;
+        -webkit-box-orient: vertical;
+        -webkit-line-clamp: 2;
       }
 
-      dl {
-        display: grid;
-        grid-template-columns: repeat(3, minmax(0, 1fr));
-        margin: var(--space-2) 0 0;
-        border-top: 1px solid var(--color-line);
+      .meta {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.4rem;
+        margin: 0.1rem 0 0;
+        padding: 0;
+        list-style: none;
       }
 
-      dl > div {
-        padding-top: var(--space-3);
-      }
-
-      dt {
+      .chip {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.25rem;
+        padding: 0.12rem 0.45rem;
+        border: 1px solid var(--color-line);
+        border-radius: 999px;
         color: var(--color-ink-muted);
-        font-family: var(--font-label);
-        font-size: 0.65rem;
-        font-weight: 700;
-        letter-spacing: 0.08em;
-        text-transform: uppercase;
-      }
-
-      dd {
-        margin: 0.15rem 0 0;
+        font-size: 0.72rem;
         font-variant-numeric: tabular-nums;
-        font-weight: 650;
       }
 
-      @media (max-width: 42rem) {
-        .body {
-          padding: var(--space-4);
-        }
+      .chip svg {
+        width: 0.8rem;
+        height: 0.8rem;
+        color: var(--color-leaf);
       }
 
       @media (prefers-reduced-motion: reduce) {
@@ -159,6 +160,7 @@ export class RecipeCard extends LitElement {
   render() {
     const recipe = this.recipe;
     const languageLabel = translate(this.locale, recipe.language === "fr" ? "french" : "english");
+    const totalTime = recipe.prepTime + recipe.cookTime;
 
     return html`
       <article lang=${recipe.language}>
@@ -175,20 +177,34 @@ export class RecipeCard extends LitElement {
             </p>
             <h2>${recipe.title}</h2>
             <p class="description">${recipe.description}</p>
-            <dl>
-              <div>
-                <dt>${translate(this.locale, "prepTime")}</dt>
-                <dd>${recipe.prepTime} min</dd>
-              </div>
-              <div>
-                <dt>${translate(this.locale, "cookTime")}</dt>
-                <dd>${recipe.cookTime} min</dd>
-              </div>
-              <div>
-                <dt>${translate(this.locale, "servings")}</dt>
-                <dd>${recipe.servings}</dd>
-              </div>
-            </dl>
+            <ul class="meta">
+              <li class="chip">
+                <svg viewBox="0 0 24 24" aria-hidden="true" fill="none">
+                  <circle cx="12" cy="13" r="8" stroke="currentColor" stroke-width="2" />
+                  <path
+                    d="M12 9v4l2.5 2.5"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                  />
+                </svg>
+                <span>${totalTime} min</span>
+                <span class="visually-hidden">${translate(this.locale, "totalTime")}</span>
+              </li>
+              <li class="chip">
+                <svg viewBox="0 0 24 24" aria-hidden="true" fill="none">
+                  <circle cx="9" cy="8" r="3" stroke="currentColor" stroke-width="2" />
+                  <path
+                    d="M3.5 19a5.5 5.5 0 0 1 11 0M16 6.2a3 3 0 0 1 0 5.6M15.5 19a5.5 5.5 0 0 0-1.8-4.1"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                  />
+                </svg>
+                <span>${recipe.servings}</span>
+                <span class="visually-hidden">${translate(this.locale, "servings")}</span>
+              </li>
+            </ul>
           </div>
         </a>
       </article>

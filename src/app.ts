@@ -41,125 +41,39 @@ export class MiamApp extends LitElement {
       }
 
       app-header {
-        position: relative;
-        z-index: 10;
+        position: sticky;
+        top: 0;
+        z-index: 20;
       }
 
       main {
         width: min(100% - 2rem, var(--content-width));
         margin-inline: auto;
-        padding-block: clamp(2.5rem, 7vw, 6.5rem) 0;
-      }
-
-      .hero {
-        display: grid;
-        grid-template-columns: minmax(0, 1.35fr) minmax(18rem, 0.65fr);
-        gap: clamp(2rem, 8vw, 8rem);
-        align-items: end;
-        padding-bottom: clamp(2.5rem, 6vw, 5rem);
-      }
-
-      h1 {
-        max-width: 13ch;
-        margin: var(--space-3) 0 0;
-        font-family: var(--font-display);
-        font-size: clamp(3rem, 8vw, 7.8rem);
-        font-weight: 700;
-        letter-spacing: -0.065em;
-        line-height: 0.88;
-      }
-
-      .intro {
-        max-width: 32rem;
-        margin: 0;
-        padding-left: var(--space-5);
-        border-left: 0.3rem solid var(--color-accent);
-        color: var(--color-ink-muted);
-        font-family: var(--font-display);
-        font-size: clamp(1.05rem, 2.2vw, 1.35rem);
-        line-height: 1.6;
-      }
-
-      .tools {
-        display: grid;
-        grid-template-columns: minmax(0, 1fr) auto;
-        gap: var(--space-4);
-        align-items: end;
-        padding: var(--space-5);
-        border: 1px solid var(--color-line);
-        border-radius: var(--radius-md);
-        background: var(--color-surface-strong);
-      }
-
-      .search {
-        display: grid;
-        gap: var(--space-2);
-      }
-
-      .input-wrap {
-        display: grid;
-        grid-template-columns: 1fr auto;
-        overflow: hidden;
-        border: 1px solid var(--color-ink);
-        border-radius: var(--radius-sm);
-        background: var(--color-surface);
-      }
-
-      input {
-        min-width: 0;
-        padding: 0.9rem 1rem;
-        border: 0;
-        color: var(--color-ink);
-        background: transparent;
-      }
-
-      input:focus {
-        outline: 0;
-      }
-
-      .input-wrap:focus-within {
-        outline: 3px solid var(--color-focus);
-        outline-offset: 3px;
-      }
-
-      .clear {
-        min-width: 3rem;
-        border: 0;
-        color: var(--color-ink);
-        background: transparent;
-        cursor: pointer;
-        font-size: 1.25rem;
-      }
-
-      .clear:hover {
-        background: var(--color-canvas);
+        padding-block: var(--space-3) var(--space-5);
       }
 
       .count {
-        min-width: 7rem;
-        margin: 0 0 0.9rem;
+        margin: 0 0 var(--space-3);
         color: var(--color-ink-muted);
-        text-align: right;
       }
 
       .grid {
         display: grid;
-        grid-template-columns: repeat(3, minmax(0, 1fr));
-        gap: var(--space-5);
-        padding-top: var(--space-6);
+        grid-template-columns: repeat(auto-fill, minmax(11rem, 1fr));
+        gap: var(--space-3);
       }
 
       recipe-card {
-        animation: enter 500ms both;
-        animation-delay: calc(var(--index, 0) * 65ms);
+        animation: enter 420ms both;
+        animation-delay: calc(var(--index, 0) * 45ms);
       }
 
       .empty,
       .not-found {
         display: grid;
-        min-height: 24rem;
+        min-height: 16rem;
         place-content: center;
-        padding: var(--space-7);
+        padding: var(--space-6);
         border: 1px dashed var(--color-line);
         border-radius: var(--radius-md);
         text-align: center;
@@ -170,8 +84,8 @@ export class MiamApp extends LitElement {
       .not-found h1 {
         margin: 0;
         font-family: var(--font-display);
-        font-size: clamp(2rem, 5vw, 3.8rem);
-        letter-spacing: -0.04em;
+        font-size: clamp(1.6rem, 4vw, 2.4rem);
+        letter-spacing: -0.03em;
       }
 
       .empty p,
@@ -191,45 +105,18 @@ export class MiamApp extends LitElement {
       @keyframes enter {
         from {
           opacity: 0;
-          translate: 0 1rem;
-        }
-      }
-
-      @media (max-width: 62rem) {
-        .grid {
-          grid-template-columns: repeat(2, minmax(0, 1fr));
-        }
-      }
-
-      @media (max-width: 48rem) {
-        .hero {
-          grid-template-columns: 1fr;
-          gap: var(--space-6);
-        }
-
-        .intro {
-          max-width: 40rem;
+          translate: 0 0.75rem;
         }
       }
 
       @media (max-width: 40rem) {
         main {
-          width: min(100% - 1.25rem, var(--content-width));
-        }
-
-        .tools {
-          grid-template-columns: 1fr;
-          padding: var(--space-4);
-        }
-
-        .count {
-          margin: 0;
-          text-align: left;
+          width: min(100% - 1.5rem, var(--content-width));
         }
 
         .grid {
-          grid-template-columns: 1fr;
-          gap: var(--space-4);
+          grid-template-columns: repeat(auto-fill, minmax(10rem, 1fr));
+          gap: var(--space-3);
         }
       }
 
@@ -294,15 +181,12 @@ export class MiamApp extends LitElement {
     this.applyLocale();
   }
 
-  private changeQuery(event: Event): void {
-    this.query = (event.currentTarget as HTMLInputElement).value;
+  private changeQuery(event: CustomEvent<string>): void {
+    this.query = event.detail;
   }
 
   private clearQuery(): void {
     this.query = "";
-    void this.updateComplete.then(() => {
-      this.renderRoot.querySelector<HTMLInputElement>("#recipe-search")?.focus();
-    });
   }
 
   private skipToContent(event: Event): void {
@@ -323,46 +207,11 @@ export class MiamApp extends LitElement {
     );
 
     return html`
-      <section class="hero" aria-labelledby="catalog-title">
-        <div>
-          <p class="eyebrow">${translate(this.locale, "catalogEyebrow")}</p>
-          <h1 id="catalog-title">${translate(this.locale, "catalogTitle")}</h1>
-        </div>
-        <p class="intro">${translate(this.locale, "catalogIntro")}</p>
-      </section>
-
-      <section aria-label=${translate(this.locale, "searchLabel")}>
-        <div class="tools">
-          <label class="search" for="recipe-search">
-            <span class="eyebrow">${translate(this.locale, "searchLabel")}</span>
-            <span class="input-wrap">
-              <input
-                id="recipe-search"
-                type="search"
-                autocomplete="off"
-                .value=${this.query}
-                placeholder=${translate(this.locale, "searchPlaceholder")}
-                @input=${this.changeQuery}
-              />
-              ${
-                this.query
-                  ? html`
-                    <button
-                      class="clear"
-                      type="button"
-                      title=${translate(this.locale, "clearSearch")}
-                      aria-label=${translate(this.locale, "clearSearch")}
-                      @click=${this.clearQuery}
-                    >
-                      ×
-                    </button>
-                  `
-                  : null
-              }
-            </span>
-          </label>
-          <p class="eyebrow count" aria-live="polite">${resultLabel}</p>
-        </div>
+      <section aria-labelledby="catalog-heading">
+        <h1 id="catalog-heading" class="visually-hidden">
+          ${translate(this.locale, "recipesHeading")}
+        </h1>
+        <p class="eyebrow count" aria-live="polite">${resultLabel}</p>
 
         ${
           visibleRecipes.length
@@ -410,7 +259,14 @@ export class MiamApp extends LitElement {
       <a class="skip-link" href="#main-content" @click=${this.skipToContent}>
         ${translate(this.locale, "skipToContent")}
       </a>
-      <app-header .locale=${this.locale} @locale-change=${this.changeLocale}></app-header>
+      <app-header
+        .locale=${this.locale}
+        .query=${this.query}
+        .showSearch=${this.route.name === "catalog"}
+        @locale-change=${this.changeLocale}
+        @search-change=${this.changeQuery}
+        @clear-search=${this.clearQuery}
+      ></app-header>
       <main id="main-content" tabindex="-1">
         ${this.route.name === "recipe" ? this.renderRecipe(this.route.slug) : this.renderCatalog()}
       </main>

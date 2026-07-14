@@ -24,11 +24,12 @@ afterEach(() => {
 });
 
 describe("miam-app", () => {
-  it("renders the recipe catalog and filters it from the search field", async () => {
+  it("renders the recipe catalog and filters it from the header search field", async () => {
     const app = await renderApp();
     expect(app.shadowRoot?.querySelectorAll("recipe-card")).toHaveLength(4);
 
-    const input = app.shadowRoot?.querySelector<HTMLInputElement>("#recipe-search");
+    const header = app.shadowRoot?.querySelector("app-header");
+    const input = header?.shadowRoot?.querySelector<HTMLInputElement>("#recipe-search");
     expect(input).not.toBeNull();
     if (!input) {
       return;
@@ -66,6 +67,13 @@ describe("miam-app", () => {
     expect(app.shadowRoot?.textContent).toContain("Recipe not found");
   });
 
+  it("gives the catalog a single top-level heading", async () => {
+    const app = await renderApp();
+    const headings = app.shadowRoot?.querySelectorAll("h1");
+    expect(headings).toHaveLength(1);
+    expect(headings?.[0]?.textContent?.trim()).toBe("Recipes");
+  });
+
   it("persists language changes and updates the document language", async () => {
     const app = await renderApp();
     const header = app.shadowRoot?.querySelector("app-header");
@@ -80,7 +88,7 @@ describe("miam-app", () => {
 
     expect(document.documentElement.lang).toBe("fr");
     expect(localStorage.getItem("miam:locale")).toBe("fr");
-    expect(app.shadowRoot?.textContent).toContain("Des recettes à refaire encore.");
+    expect(app.shadowRoot?.querySelector(".count")?.textContent).toContain("recettes");
   });
 
   it("lets keyboard users skip directly to the main content", async () => {

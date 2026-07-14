@@ -19,7 +19,7 @@ export class RecipeDetail extends LitElement {
         display: inline-flex;
         align-items: center;
         gap: var(--space-2);
-        margin-bottom: var(--space-5);
+        margin-bottom: var(--space-4);
         color: var(--color-leaf);
         font-weight: 700;
         text-underline-offset: 0.2em;
@@ -32,22 +32,21 @@ export class RecipeDetail extends LitElement {
 
       article {
         display: grid;
-        gap: var(--space-7);
+        gap: var(--space-5);
       }
 
       .hero {
         display: grid;
-        grid-template-columns: minmax(0, 1.05fr) minmax(20rem, 0.95fr);
-        min-height: 30rem;
+        grid-template-columns: minmax(0, 0.95fr) minmax(18rem, 1.05fr);
         overflow: hidden;
         border: 1px solid var(--color-line);
-        border-radius: var(--radius-lg);
+        border-radius: var(--radius-md);
         background: var(--color-surface);
-        box-shadow: var(--shadow-card);
       }
 
       .hero-image {
-        min-height: 24rem;
+        aspect-ratio: 16 / 9;
+        min-height: 0;
         border-right: 1px solid var(--color-line);
         background: var(--color-surface-strong);
       }
@@ -62,8 +61,8 @@ export class RecipeDetail extends LitElement {
       .summary {
         display: grid;
         align-content: center;
-        gap: var(--space-4);
-        padding: clamp(2rem, 6vw, 4.5rem);
+        gap: var(--space-3);
+        padding: clamp(1.25rem, 3vw, 2.25rem);
       }
 
       .identity {
@@ -79,21 +78,21 @@ export class RecipeDetail extends LitElement {
       }
 
       h1 {
-        max-width: 13ch;
+        max-width: 14ch;
         margin: 0;
         font-family: var(--font-display);
-        font-size: clamp(2.6rem, 7vw, 5.5rem);
+        font-size: clamp(1.75rem, 4vw, 2.6rem);
         font-weight: 700;
-        letter-spacing: -0.055em;
-        line-height: 0.92;
+        letter-spacing: -0.04em;
+        line-height: 0.98;
       }
 
       .description {
         max-width: 38rem;
         margin: 0;
         color: var(--color-ink-muted);
-        font-size: 1.05rem;
-        line-height: 1.65;
+        font-size: 0.95rem;
+        line-height: 1.55;
       }
 
       dl {
@@ -125,25 +124,25 @@ export class RecipeDetail extends LitElement {
 
       .recipe-body {
         display: grid;
-        grid-template-columns: minmax(16rem, 0.72fr) minmax(0, 1.28fr);
-        gap: clamp(2rem, 7vw, 7rem);
+        grid-template-columns: minmax(14rem, 0.7fr) minmax(0, 1.3fr);
+        gap: clamp(1.25rem, 4vw, 3rem);
         align-items: start;
       }
 
       .ingredients {
         position: sticky;
-        top: var(--space-5);
-        padding: var(--space-6);
+        top: var(--space-4);
+        padding: var(--space-4);
         border: 1px solid var(--color-line);
         border-radius: var(--radius-md);
         background: var(--color-surface);
       }
 
       h2 {
-        margin: 0 0 var(--space-5);
+        margin: 0 0 var(--space-3);
         font-family: var(--font-display);
-        font-size: clamp(1.8rem, 4vw, 2.7rem);
-        letter-spacing: -0.035em;
+        font-size: clamp(1.4rem, 3vw, 1.9rem);
+        letter-spacing: -0.03em;
       }
 
       ul {
@@ -155,25 +154,25 @@ export class RecipeDetail extends LitElement {
       }
 
       li {
-        padding: var(--space-3) 0;
+        padding: 0.55rem 0;
         border-top: 1px solid var(--color-line);
-        line-height: 1.5;
+        line-height: 1.45;
       }
 
       .method {
         min-width: 0;
-        padding: var(--space-4) 0;
+        padding: var(--space-1) 0;
       }
 
       .markdown {
         color: var(--color-ink);
         font-family: var(--font-display);
-        font-size: clamp(1.05rem, 2vw, 1.25rem);
-        line-height: 1.75;
+        font-size: clamp(0.95rem, 1.4vw, 1.1rem);
+        line-height: 1.65;
       }
 
       .markdown :is(h2, h3) {
-        margin: 2em 0 0.5em;
+        margin: 1.5em 0 0.4em;
         letter-spacing: -0.025em;
         line-height: 1.15;
       }
@@ -212,7 +211,7 @@ export class RecipeDetail extends LitElement {
 
         .recipe-body {
           grid-template-columns: 1fr;
-          gap: var(--space-6);
+          gap: var(--space-5);
         }
 
         .ingredients {
@@ -222,7 +221,7 @@ export class RecipeDetail extends LitElement {
 
       @media (max-width: 34rem) {
         .summary {
-          padding: var(--space-6) var(--space-5);
+          padding: var(--space-5) var(--space-4);
         }
 
         dl {
@@ -234,7 +233,7 @@ export class RecipeDetail extends LitElement {
         }
 
         .ingredients {
-          padding: var(--space-5);
+          padding: var(--space-4);
         }
       }
     `,

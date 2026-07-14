@@ -36,8 +36,6 @@ ingredients:
     unit: g
 ---
 
-## Instructions
-
 1. In a large bowl, whisk together the flour, sugar, baking powder and salt.
 2. In a separate bowl, whisk the eggs and milk together, then pour into the dry ingredients and whisk until just combined (a few lumps are fine).
 3. Melt a little butter in a non-stick pan over medium heat.
