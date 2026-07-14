@@ -1,0 +1,311 @@
+import { css, html, LitElement } from "lit";
+import { customElement, property } from "lit/decorators.js";
+import { unsafeHTML } from "lit/directives/unsafe-html.js";
+import { assetUrl } from "../lib/assets";
+import { type Locale, translate } from "../lib/i18n";
+import { sharedStyles } from "../styles/component";
+import type { Recipe } from "../types/recipe";
+
+@customElement("recipe-detail")
+export class RecipeDetail extends LitElement {
+  static styles = [
+    sharedStyles,
+    css`
+      :host {
+        display: block;
+      }
+
+      .back {
+        display: inline-flex;
+        align-items: center;
+        gap: var(--space-2);
+        margin-bottom: var(--space-5);
+        color: var(--color-leaf);
+        font-weight: 700;
+        text-underline-offset: 0.2em;
+      }
+
+      .back::before {
+        content: "←";
+        font-size: 1.2em;
+      }
+
+      article {
+        display: grid;
+        gap: var(--space-7);
+      }
+
+      .hero {
+        display: grid;
+        grid-template-columns: minmax(0, 1.05fr) minmax(20rem, 0.95fr);
+        min-height: 30rem;
+        overflow: hidden;
+        border: 1px solid var(--color-line);
+        border-radius: var(--radius-lg);
+        background: var(--color-surface);
+        box-shadow: var(--shadow-card);
+      }
+
+      .hero-image {
+        min-height: 24rem;
+        border-right: 1px solid var(--color-line);
+        background: var(--color-surface-strong);
+      }
+
+      .hero-image img {
+        display: block;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+      }
+
+      .summary {
+        display: grid;
+        align-content: center;
+        gap: var(--space-4);
+        padding: clamp(2rem, 6vw, 4.5rem);
+      }
+
+      .identity {
+        display: flex;
+        flex-wrap: wrap;
+        gap: var(--space-2);
+      }
+
+      .identity span {
+        padding: 0.35rem 0.5rem;
+        border: 1px solid var(--color-line);
+        border-radius: var(--radius-sm);
+      }
+
+      h1 {
+        max-width: 13ch;
+        margin: 0;
+        font-family: var(--font-display);
+        font-size: clamp(2.6rem, 7vw, 5.5rem);
+        font-weight: 700;
+        letter-spacing: -0.055em;
+        line-height: 0.92;
+      }
+
+      .description {
+        max-width: 38rem;
+        margin: 0;
+        color: var(--color-ink-muted);
+        font-size: 1.05rem;
+        line-height: 1.65;
+      }
+
+      dl {
+        display: grid;
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+        margin: var(--space-3) 0 0;
+        border-top: 1px solid var(--color-line);
+        border-bottom: 1px solid var(--color-line);
+      }
+
+      dl > div {
+        padding: var(--space-4) var(--space-3) var(--space-4) 0;
+      }
+
+      dt {
+        color: var(--color-ink-muted);
+        font-family: var(--font-label);
+        font-size: 0.65rem;
+        font-weight: 700;
+        letter-spacing: 0.09em;
+        text-transform: uppercase;
+      }
+
+      dd {
+        margin: 0.2rem 0 0;
+        font-weight: 700;
+        font-variant-numeric: tabular-nums;
+      }
+
+      .recipe-body {
+        display: grid;
+        grid-template-columns: minmax(16rem, 0.72fr) minmax(0, 1.28fr);
+        gap: clamp(2rem, 7vw, 7rem);
+        align-items: start;
+      }
+
+      .ingredients {
+        position: sticky;
+        top: var(--space-5);
+        padding: var(--space-6);
+        border: 1px solid var(--color-line);
+        border-radius: var(--radius-md);
+        background: var(--color-surface);
+      }
+
+      h2 {
+        margin: 0 0 var(--space-5);
+        font-family: var(--font-display);
+        font-size: clamp(1.8rem, 4vw, 2.7rem);
+        letter-spacing: -0.035em;
+      }
+
+      ul {
+        display: grid;
+        gap: 0;
+        padding: 0;
+        margin: 0;
+        list-style: none;
+      }
+
+      li {
+        padding: var(--space-3) 0;
+        border-top: 1px solid var(--color-line);
+        line-height: 1.5;
+      }
+
+      .method {
+        min-width: 0;
+        padding: var(--space-4) 0;
+      }
+
+      .markdown {
+        color: var(--color-ink);
+        font-family: var(--font-display);
+        font-size: clamp(1.05rem, 2vw, 1.25rem);
+        line-height: 1.75;
+      }
+
+      .markdown :is(h2, h3) {
+        margin: 2em 0 0.5em;
+        letter-spacing: -0.025em;
+        line-height: 1.15;
+      }
+
+      .markdown > :first-child {
+        margin-top: 0;
+      }
+
+      .markdown :is(ol, ul) {
+        display: grid;
+        gap: var(--space-3);
+        padding-left: 1.4em;
+        list-style: revert;
+      }
+
+      .markdown li {
+        padding: 0;
+        border: 0;
+      }
+
+      .markdown a {
+        color: var(--color-accent-strong);
+      }
+
+      @media (max-width: 58rem) {
+        .hero {
+          grid-template-columns: 1fr;
+        }
+
+        .hero-image {
+          aspect-ratio: 16 / 10;
+          min-height: 0;
+          border-right: 0;
+          border-bottom: 1px solid var(--color-line);
+        }
+
+        .recipe-body {
+          grid-template-columns: 1fr;
+          gap: var(--space-6);
+        }
+
+        .ingredients {
+          position: static;
+        }
+      }
+
+      @media (max-width: 34rem) {
+        .summary {
+          padding: var(--space-6) var(--space-5);
+        }
+
+        dl {
+          grid-template-columns: repeat(2, 1fr);
+        }
+
+        dl > div:nth-child(-n + 2) {
+          border-bottom: 1px solid var(--color-line);
+        }
+
+        .ingredients {
+          padding: var(--space-5);
+        }
+      }
+    `,
+  ];
+
+  @property({ attribute: false })
+  recipe!: Recipe;
+
+  @property({ attribute: false })
+  locale: Locale = "en";
+
+  render() {
+    const recipe = this.recipe;
+    const languageLabel = translate(this.locale, recipe.language === "fr" ? "french" : "english");
+
+    return html`
+      <a class="back" href="#/">${translate(this.locale, "backToRecipes")}</a>
+      <article lang=${recipe.language}>
+        <section class="hero">
+          <div class="hero-image">
+            <img src=${assetUrl(recipe.image)} alt=${recipe.imageAlt} />
+          </div>
+          <div class="summary">
+            <div class="identity">
+              <span class="eyebrow">${recipe.cuisine}</span>
+              <span class="eyebrow">
+                ${translate(this.locale, "recipeLanguage")}: ${languageLabel}
+              </span>
+            </div>
+            <h1>${recipe.title}</h1>
+            <p class="description">${recipe.description}</p>
+            <dl>
+              <div>
+                <dt>${translate(this.locale, "prepTime")}</dt>
+                <dd>${recipe.prepTime} min</dd>
+              </div>
+              <div>
+                <dt>${translate(this.locale, "cookTime")}</dt>
+                <dd>${recipe.cookTime} min</dd>
+              </div>
+              <div>
+                <dt>${translate(this.locale, "totalTime")}</dt>
+                <dd>${recipe.prepTime + recipe.cookTime} min</dd>
+              </div>
+              <div>
+                <dt>${translate(this.locale, "servings")}</dt>
+                <dd>${recipe.servings}</dd>
+              </div>
+            </dl>
+          </div>
+        </section>
+
+        <section class="recipe-body">
+          <aside class="ingredients">
+            <h2>${translate(this.locale, "ingredients")}</h2>
+            <ul>
+              ${recipe.ingredients.map((ingredient) => html`<li>${ingredient}</li>`)}
+            </ul>
+          </aside>
+          <div class="method">
+            <h2>${translate(this.locale, "instructions")}</h2>
+            <div class="markdown">${unsafeHTML(recipe.instructionsHtml)}</div>
+          </div>
+        </section>
+      </article>
+    `;
+  }
+}
+
+declare global {
+  interface HTMLElementTagNameMap {
+    "recipe-detail": RecipeDetail;
+  }
+}

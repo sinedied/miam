@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" role="img" aria-label="Stack of pancakes with butter and syrup">
+  <rect width="200" height="200" fill="#fdf3e0"/>
+  <ellipse cx="100" cy="150" rx="70" ry="14" fill="#d99a4e"/>
+  <ellipse cx="100" cy="150" rx="70" ry="8" fill="#e8ac63"/>
+  <ellipse cx="100" cy="125" rx="65" ry="13" fill="#deA45a"/>
+  <ellipse cx="100" cy="125" rx="65" ry="7" fill="#eeb96e"/>
+  <ellipse cx="100" cy="101" rx="60" ry="12" fill="#e3ac60"/>
+  <ellipse cx="100" cy="101" rx="60" ry="6" fill="#f3c176"/>
+  <rect x="88" y="78" width="24" height="14" rx="3" fill="#f6d873"/>
+  <path d="M60 92 C 80 108, 120 108, 140 92" stroke="#a9672a" stroke-width="3" fill="none" stroke-linecap="round"/>
+  <path d="M55 118 C 78 132, 122 132, 145 118" stroke="#a9672a" stroke-width="3" fill="none" stroke-linecap="round"/>
+</svg>

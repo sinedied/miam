@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" role="img" aria-label="Apple tart with apple slices arranged in a rosette">
+  <rect width="200" height="200" fill="#fdf6e9"/>
+  <ellipse cx="100" cy="150" rx="80" ry="18" fill="#dba653"/>
+  <ellipse cx="100" cy="144" rx="78" ry="15" fill="#f0c877"/>
+  <circle cx="100" cy="105" r="68" fill="#f6dd97"/>
+  <circle cx="100" cy="105" r="60" fill="#f9e7ae"/>
+  <g fill="#d64b3e" stroke="#b5382c" stroke-width="1.5">
+    <path d="M100 55 a12 20 0 1 1 -0.1 0 z"/>
+    <path d="M133 65 a12 20 0 1 1 -0.1 0 z" transform="rotate(45 133 65)"/>
+    <path d="M148 100 a12 20 0 1 1 -0.1 0 z" transform="rotate(90 148 100)"/>
+    <path d="M133 135 a12 20 0 1 1 -0.1 0 z" transform="rotate(135 133 135)"/>
+    <path d="M100 145 a12 20 0 1 1 -0.1 0 z" transform="rotate(180 100 145)"/>
+    <path d="M67 135 a12 20 0 1 1 -0.1 0 z" transform="rotate(225 67 135)"/>
+    <path d="M52 100 a12 20 0 1 1 -0.1 0 z" transform="rotate(270 52 100)"/>
+    <path d="M67 65 a12 20 0 1 1 -0.1 0 z" transform="rotate(315 67 65)"/>
+  </g>
+  <circle cx="100" cy="105" r="14" fill="#f0c877"/>
+</svg>
