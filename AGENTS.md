@@ -49,7 +49,7 @@ Guidance for coding agents working on **miam**, a read-only MVP family recipe ca
 ## Workflow
 
 - Use **conventional commits** for all commit messages (`feat:`, `fix:`, `chore:`, `docs:`, `test:`, `refactor:`, etc.).
-- After every coherent set of changes, run **`/rubber-duck`** with **Claude Opus 4.8 at xhigh
+- After every coherent set of changes, run **`/rubber-duck`** with **GPT 5.5 at xhigh
   reasoning effort** to review the work before moving on.
 - **Before committing**, ensure all of the following pass:
   1. Build (`vite build` / project build script)
