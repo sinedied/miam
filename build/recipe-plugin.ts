@@ -30,8 +30,8 @@ export function toClientRecipe(recipe: ContentRecipe): ClientRecipe {
     title: recipe.title,
     description: recipe.description,
     language: recipe.language,
-    image: recipe.image.path,
-    imageAlt: recipe.image.alt,
+    image: recipe.image?.path,
+    imageAlt: recipe.image?.alt,
     prepTime: recipe.prepTime,
     cookTime: recipe.cookTime,
     servings: recipe.servings,
@@ -51,11 +51,13 @@ export function loadRecipeModule(id: string): string | undefined {
     return undefined;
   }
   const recipes = loadRecipes().map(toClientRecipe);
-  const imports = recipes.map(
-    (recipe, index) => `import img${index} from ${JSON.stringify(`/recipes/${recipe.image}`)};`,
-  );
+  const imports: string[] = [];
   const entries = recipes.map((recipe, index) => {
-    const { image: _image, ...rest } = recipe;
+    const { image, ...rest } = recipe;
+    if (image === undefined) {
+      return JSON.stringify(rest);
+    }
+    imports.push(`import img${index} from ${JSON.stringify(`/recipes/${image}`)};`);
     return `{ ...${JSON.stringify(rest)}, image: img${index} }`;
   });
   return `${imports.join("\n")}\nexport const recipes = [${entries.join(",")}];`;

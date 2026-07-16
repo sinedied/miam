@@ -27,7 +27,7 @@ describe("recipe content client adapter", () => {
 
     const recipe = toClientRecipe(contentRecipe);
     expect(recipe.image).toMatch(/^images\//);
-    expect(recipe.imageAlt).toBe(contentRecipe.image.alt);
+    expect(recipe.imageAlt).toBe(contentRecipe.image?.alt);
     expect(recipe.instructionsHtml).toBe(contentRecipe.html);
     expect(recipe.ingredients.every((ingredient) => typeof ingredient === "string")).toBe(true);
     expect(recipe).not.toHaveProperty("rawBody");

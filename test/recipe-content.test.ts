@@ -141,6 +141,24 @@ ingredients:
     const recipe = parseRecipeMarkdown("no-language.md", raw);
     expect(recipe.language).toBeUndefined();
   });
+
+  it("treats image as an optional field", () => {
+    const raw = withFrontmatter(
+      `title: No Image
+description: A recipe without an image.
+prepTime: 10
+cookTime: 10
+servings: 2
+cuisine: Test
+tags:
+  - test
+ingredients:
+  - name: water`,
+    );
+
+    const recipe = parseRecipeMarkdown("no-image.md", raw);
+    expect(recipe.image).toBeUndefined();
+  });
 });
 
 describe("parseRecipeMarkdown - missing/invalid fields", () => {
@@ -470,7 +488,7 @@ ingredients:
   it("accepts a safe, repository-local image path", () => {
     const raw = withFrontmatter(baseFrontmatter("images/safe-photo.svg"));
     const recipe = parseRecipeMarkdown("safe-image.md", raw);
-    expect(recipe.image.path).toBe("images/safe-photo.svg");
+    expect(recipe.image?.path).toBe("images/safe-photo.svg");
   });
 });
 

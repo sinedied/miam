@@ -5,6 +5,7 @@ import { type Locale, translate } from "../lib/i18n";
 import { recipeHref } from "../lib/router";
 import { sharedStyles } from "../styles/component";
 import type { Recipe } from "../types/recipe";
+import { imagePlaceholder } from "./image-placeholder";
 
 @customElement("recipe-card")
 export class RecipeCard extends LitElement {
@@ -56,6 +57,22 @@ export class RecipeCard extends LitElement {
         height: 100%;
         object-fit: cover;
         transition: scale 450ms cubic-bezier(0.2, 0.7, 0.2, 1);
+      }
+
+      .placeholder {
+        display: grid;
+        width: 100%;
+        height: 100%;
+        place-items: center;
+        color: var(--color-accent);
+        background: var(--color-accent-soft);
+      }
+
+      .placeholder svg {
+        width: 28%;
+        max-width: 2.75rem;
+        height: auto;
+        opacity: 0.85;
       }
 
       article:hover img {
@@ -155,7 +172,11 @@ export class RecipeCard extends LitElement {
           title: recipe.title,
         })}>
           <div class="image-wrap">
-            <img src=${recipe.image} alt=${recipe.imageAlt} loading="lazy" />
+            ${
+              recipe.image
+                ? html`<img src=${recipe.image} alt=${recipe.imageAlt ?? ""} loading="lazy" />`
+                : imagePlaceholder()
+            }
           </div>
           <div class="body">
             <p class="eyebrow tags">

@@ -8,6 +8,14 @@ import "./components/recipe-detail";
 import { type Locale, loadLocale, saveLocale, translate } from "./lib/i18n";
 import { parseRoute, type Route } from "./lib/router";
 import { searchRecipes } from "./lib/search";
+import {
+  applyTheme,
+  loadTheme,
+  resolveTheme,
+  saveTheme,
+  type ThemePreference,
+  themeColors,
+} from "./lib/theme";
 import { sharedStyles } from "./styles/component";
 
 @customElement("miam-app")
@@ -136,6 +144,9 @@ export class MiamApp extends LitElement {
   private locale: Locale = loadLocale();
 
   @state()
+  private theme: ThemePreference = loadTheme();
+
+  @state()
   private route: Route = parseRoute(globalThis.location?.hash ?? "");
 
   @state()
@@ -154,6 +165,7 @@ export class MiamApp extends LitElement {
     super.connectedCallback();
     globalThis.addEventListener("hashchange", this.onHashChange);
     this.applyLocale();
+    this.applyThemePreference();
     this.updateDocumentTitle();
   }
 
@@ -179,6 +191,18 @@ export class MiamApp extends LitElement {
     this.locale = event.detail;
     saveLocale(this.locale);
     this.applyLocale();
+  }
+
+  private changeTheme(event: CustomEvent<ThemePreference>): void {
+    this.theme = event.detail;
+    saveTheme(this.theme);
+    this.applyThemePreference();
+  }
+
+  private applyThemePreference(): void {
+    applyTheme(this.theme);
+    const meta = document.querySelector('meta[name="theme-color"]');
+    meta?.setAttribute("content", themeColors[resolveTheme(this.theme)]);
   }
 
   private changeQuery(event: CustomEvent<string>): void {
@@ -261,9 +285,11 @@ export class MiamApp extends LitElement {
       </a>
       <app-header
         .locale=${this.locale}
+        .theme=${this.theme}
         .query=${this.query}
         .showSearch=${this.route.name === "catalog"}
         @locale-change=${this.changeLocale}
+        @theme-change=${this.changeTheme}
         @search-change=${this.changeQuery}
         @clear-search=${this.clearQuery}
       ></app-header>

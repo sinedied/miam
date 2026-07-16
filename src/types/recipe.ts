@@ -5,8 +5,8 @@ export interface Recipe {
   readonly title: string;
   readonly description: string;
   readonly language?: RecipeLanguage;
-  readonly image: string;
-  readonly imageAlt: string;
+  readonly image?: string;
+  readonly imageAlt?: string;
   readonly prepTime: number;
   readonly cookTime: number;
   readonly servings: number;

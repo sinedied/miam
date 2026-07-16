@@ -7,9 +7,26 @@
       name="description"
       content="Miam is a family recipe catalog for finding the right meal."
     />
-    <meta name="theme-color" content="#f1eee5" />
+    <meta name="theme-color" content="#f6f3ee" />
     <link rel="icon" type="image/svg+xml" href="./favicon.svg" />
     <title>Miam — Family recipes</title>
+    <script>
+      // Apply the saved theme (and matching browser-chrome color) before first paint.
+      (() => {
+        try {
+          const theme = localStorage.getItem("miam:theme");
+          if (theme === "light" || theme === "dark") {
+            document.documentElement.dataset.theme = theme;
+          }
+          const dark =
+            theme === "dark" ||
+            (theme !== "light" && matchMedia("(prefers-color-scheme: dark)").matches);
+          document
+            .querySelector('meta[name="theme-color"]')
+            ?.setAttribute("content", dark ? "#17130f" : "#f6f3ee");
+        } catch {}
+      })();
+    </script>
     <script type="module" src="/src/main.ts"></script>
   </head>
   <body>

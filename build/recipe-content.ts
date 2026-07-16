@@ -48,7 +48,8 @@ export interface RecipeFrontmatter {
   description: string;
   /** Optional declared content language; validated only when present. */
   language?: RecipeLanguage;
-  image: RecipeImage;
+  /** Optional recipe image; validated only when present. */
+  image?: RecipeImage;
   /** Preparation time in minutes, positive integer. */
   prepTime: number;
   /** Cooking time in minutes, positive integer. */
@@ -351,7 +352,7 @@ export function parseRecipeMarkdown(fileName: string, raw: string): Recipe {
     );
   }
 
-  const image = validateImage(data.image, pushIssue);
+  const image = data.image === undefined ? undefined : validateImage(data.image, pushIssue);
 
   if (!isPositiveInteger(data.prepTime)) {
     pushIssue("prepTime", "must be a positive integer (minutes)");
@@ -393,8 +394,7 @@ export function parseRecipeMarkdown(fileName: string, raw: string): Recipe {
     title: (data.title as string).trim(),
     description: (data.description as string).trim(),
     language: data.language as RecipeLanguage | undefined,
-    // biome-ignore lint: image is guaranteed defined here since issues.length === 0
-    image: image!,
+    image,
     prepTime: data.prepTime as number,
     cookTime: data.cookTime as number,
     servings: data.servings as number,
@@ -501,11 +501,13 @@ export function loadRecipes(options: LoadRecipesOptions = {}): Recipe[] {
 
   const recipes = parseRecipes(files);
   const missingImages = recipes
-    .filter((recipe) => !fs.existsSync(path.join(dir, recipe.image.path)))
+    .filter(
+      (recipe) => recipe.image !== undefined && !fs.existsSync(path.join(dir, recipe.image.path)),
+    )
     .map((recipe) => ({
       file: recipe.file,
       field: "image.path",
-      message: `referenced image does not exist under the recipes directory: "${recipe.image.path}"`,
+      message: `referenced image does not exist under the recipes directory: "${recipe.image?.path}"`,
     }));
 
   if (missingImages.length > 0) {

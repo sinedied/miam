@@ -14,9 +14,10 @@ afterEach(() => {
 });
 
 describe("app-header", () => {
-  it("selects a language from the settings menu and emits locale changes", async () => {
+  it("selects language and theme from the settings menu without closing it", async () => {
     const header = document.createElement("app-header") as AppHeader;
     header.locale = "fr";
+    header.theme = "system";
     document.body.append(header);
     await header.updateComplete;
 
@@ -32,21 +33,46 @@ describe("app-header", () => {
     const items = [
       ...(header.shadowRoot?.querySelectorAll<HTMLButtonElement>("[role='menuitemradio']") ?? []),
     ];
-    expect(items).toHaveLength(2);
-    const active = items.find((item) => item.getAttribute("aria-checked") === "true");
-    expect(active?.textContent).toContain("Français");
+    // 2 languages + 3 theme options.
+    expect(items).toHaveLength(5);
 
-    const listener = vi.fn();
-    header.addEventListener("locale-change", listener);
-    const english = items.find((item) => item.getAttribute("aria-checked") === "false");
+    const localeListener = vi.fn();
+    const themeListener = vi.fn();
+    header.addEventListener("locale-change", localeListener);
+    header.addEventListener("theme-change", themeListener);
+
+    const english = items.find((item) => item.textContent?.includes("English"));
     english?.click();
-    expect(listener).toHaveBeenCalledOnce();
-    expect(listener.mock.calls[0]?.[0]).toMatchObject({ detail: "en" });
+    expect(localeListener).toHaveBeenCalledOnce();
+    expect(localeListener.mock.calls[0]?.[0]).toMatchObject({ detail: "en" });
 
+    const dark = items.find((item) => item.textContent?.includes("Sombre"));
+    dark?.click();
+    expect(themeListener).toHaveBeenCalledOnce();
+    expect(themeListener.mock.calls[0]?.[0]).toMatchObject({ detail: "dark" });
+
+    // The settings menu stays open so multiple preferences can be changed.
     await header.updateComplete;
-    await Promise.resolve();
-    expect(header.shadowRoot?.querySelector(".menu")).toBeNull();
-    expect(header.shadowRoot?.activeElement).toBe(button);
+    expect(header.shadowRoot?.querySelector(".menu")).not.toBeNull();
+    expect(button?.getAttribute("aria-expanded")).toBe("true");
+  });
+
+  it("marks the active theme option as checked", async () => {
+    const header = document.createElement("app-header") as AppHeader;
+    header.theme = "dark";
+    document.body.append(header);
+    await header.updateComplete;
+
+    header.shadowRoot?.querySelector<HTMLButtonElement>(".settings-button")?.click();
+    await header.updateComplete;
+
+    const items = [
+      ...(header.shadowRoot?.querySelectorAll<HTMLButtonElement>("[role='menuitemradio']") ?? []),
+    ];
+    const checkedDark = items.find(
+      (item) => item.getAttribute("aria-checked") === "true" && item.textContent?.includes("Dark"),
+    );
+    expect(checkedDark).toBeDefined();
   });
 
   it("closes the settings menu on Escape and returns focus to the button", async () => {
@@ -138,6 +164,18 @@ describe("recipe-card", () => {
     expect(card.shadowRoot?.querySelector("img")?.getAttribute("alt")).toBe(recipeFixture.imageAlt);
     expect(card.shadowRoot?.querySelector("article")?.getAttribute("lang")).toBe("en");
     expect(card.shadowRoot?.querySelector("img")?.getAttribute("loading")).toBe("lazy");
+  });
+
+  it("renders a placeholder when the recipe has no image", async () => {
+    const card = document.createElement("recipe-card") as RecipeCard;
+    card.recipe = { ...recipeFixture, image: undefined, imageAlt: undefined };
+    card.locale = "en";
+    document.body.append(card);
+    await card.updateComplete;
+
+    expect(card.shadowRoot?.querySelector("img")).toBeNull();
+    expect(card.shadowRoot?.querySelector(".placeholder")).not.toBeNull();
+    expect(card.shadowRoot?.textContent).toContain("Tomato Tart");
   });
 });
 

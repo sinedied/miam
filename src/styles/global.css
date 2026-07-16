@@ -1,20 +1,22 @@
 :root {
-  color-scheme: light;
   font-family: "Avenir Next", Avenir, "Century Gothic", Futura, sans-serif;
   font-synthesis: none;
   text-rendering: optimizeLegibility;
 
-  --color-canvas: #f1eee5;
-  --color-surface: #faf8f1;
-  --color-surface-strong: #e4e0d4;
-  --color-ink: #1d2922;
-  --color-ink-muted: #5b685f;
-  --color-line: #b9b8aa;
-  --color-accent: #b84f32;
-  --color-accent-strong: #87351f;
-  --color-leaf: #365744;
-  --color-focus: #126fba;
-  --shadow-card: 0 1px 0 rgb(29 41 34 / 12%), 0 14px 35px rgb(29 41 34 / 7%);
+  /* Warm minimal — light theme (default). */
+  color-scheme: light;
+  --color-canvas: #f6f3ee;
+  --color-surface: #fffdfa;
+  --color-surface-strong: #ece6dd;
+  --color-ink: #23201c;
+  --color-ink-muted: #6b6258;
+  --color-line: #e0d8cc;
+  --color-accent: #c1512f;
+  --color-accent-strong: #9c3f24;
+  --color-accent-soft: #f5e6df;
+  --color-leaf: #3f6b4f;
+  --color-focus: #2f6ede;
+  --shadow-card: 0 1px 2px rgb(35 32 28 / 6%), 0 12px 28px rgb(35 32 28 / 6%);
 
   --font-display: "Iowan Old Style", "Palatino Linotype", Palatino, Georgia, serif;
   --font-body: "Avenir Next", Avenir, "Century Gothic", Futura, sans-serif;
@@ -36,6 +38,42 @@
   --header-height: 3.25rem;
 }
 
+/* Warm minimal — dark theme tokens (shared by forced dark and system dark). */
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --color-canvas: #17130f;
+  --color-surface: #201b16;
+  --color-surface-strong: #2b241d;
+  --color-ink: #f3ece2;
+  --color-ink-muted: #a99f92;
+  --color-line: #372f27;
+  --color-accent: #e0764f;
+  --color-accent-strong: #ef8f6c;
+  --color-accent-soft: #33231b;
+  --color-leaf: #7fb08a;
+  --color-focus: #8bb4ff;
+  --shadow-card: 0 1px 2px rgb(0 0 0 / 40%), 0 14px 30px rgb(0 0 0 / 35%);
+}
+
+/* System default: follow the OS unless a theme is explicitly chosen. */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    color-scheme: dark;
+    --color-canvas: #17130f;
+    --color-surface: #201b16;
+    --color-surface-strong: #2b241d;
+    --color-ink: #f3ece2;
+    --color-ink-muted: #a99f92;
+    --color-line: #372f27;
+    --color-accent: #e0764f;
+    --color-accent-strong: #ef8f6c;
+    --color-accent-soft: #33231b;
+    --color-leaf: #7fb08a;
+    --color-focus: #8bb4ff;
+    --shadow-card: 0 1px 2px rgb(0 0 0 / 40%), 0 14px 30px rgb(0 0 0 / 35%);
+  }
+}
+
 * {
   box-sizing: border-box;
 }
@@ -53,8 +91,7 @@ body {
   min-height: 100vh;
   margin: 0;
   color: var(--color-ink);
-  background: linear-gradient(rgb(29 41 34 / 3%) 1px, transparent 1px), var(--color-canvas);
-  background-size: 100% 2rem;
+  background: var(--color-canvas);
 }
 
 button,

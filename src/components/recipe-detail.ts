@@ -5,6 +5,7 @@ import { unsafeHTML } from "lit/directives/unsafe-html.js";
 import { type Locale, translate } from "../lib/i18n";
 import { sharedStyles } from "../styles/component";
 import type { Recipe } from "../types/recipe";
+import { imagePlaceholder } from "./image-placeholder";
 
 @customElement("recipe-detail")
 export class RecipeDetail extends LitElement {
@@ -69,6 +70,22 @@ export class RecipeDetail extends LitElement {
         width: 100%;
         height: 100%;
         object-fit: cover;
+      }
+
+      .hero-image .placeholder {
+        position: absolute;
+        inset: 0;
+        display: grid;
+        place-items: center;
+        color: var(--color-accent);
+        background: var(--color-accent-soft);
+      }
+
+      .hero-image .placeholder svg {
+        width: 22%;
+        max-width: 5rem;
+        height: auto;
+        opacity: 0.85;
       }
 
       .summary {
@@ -145,9 +162,9 @@ export class RecipeDetail extends LitElement {
         top: calc(var(--header-height) + var(--space-3));
         /* Use the full height between the header and the footer, scrolling long lists
            internally. The subtracted amount is the constant space below the layout
-           (footer margin + footer height + page padding ≈ 140px) plus the header, so the
+           (footer margin + footer height + page padding ≈ 95px) plus the header, so the
            pinned top clears the header even at the page bottom. */
-        max-height: max(14rem, calc(100vh - 210px));
+        max-height: max(14rem, calc(100vh - 170px));
         overflow-y: auto;
         padding: var(--space-4);
         border: 1px solid var(--color-line);
@@ -279,7 +296,11 @@ export class RecipeDetail extends LitElement {
         <div class="layout">
           <section class="hero">
             <div class="hero-image">
-              <img src=${recipe.image} alt=${recipe.imageAlt} />
+              ${
+                recipe.image
+                  ? html`<img src=${recipe.image} alt=${recipe.imageAlt ?? ""} />`
+                  : imagePlaceholder()
+              }
             </div>
             <div class="summary">
               <div class="identity">

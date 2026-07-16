@@ -2,6 +2,7 @@ import { css, html, LitElement } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
 import { type Locale, supportedLocales, translate } from "../lib/i18n";
+import { type ThemePreference, themePreferences } from "../lib/theme";
 import { sharedStyles } from "../styles/component";
 
 @customElement("app-header")
@@ -165,6 +166,12 @@ export class AppHeader extends LitElement {
         margin: 0.1rem 0.5rem 0.25rem;
       }
 
+      .menu-group--divided {
+        margin-top: var(--space-2);
+        padding-top: var(--space-2);
+        border-top: 1px solid var(--color-line);
+      }
+
       .menu-item {
         display: flex;
         align-items: center;
@@ -206,6 +213,9 @@ export class AppHeader extends LitElement {
 
   @property({ attribute: false })
   locale: Locale = "en";
+
+  @property({ attribute: false })
+  theme: ThemePreference = "system";
 
   @property({ attribute: false })
   query = "";
@@ -268,7 +278,18 @@ export class AppHeader extends LitElement {
         }),
       );
     }
-    void this.closeMenu(true);
+  }
+
+  private selectTheme(theme: ThemePreference): void {
+    if (theme !== this.theme) {
+      this.dispatchEvent(
+        new CustomEvent<ThemePreference>("theme-change", {
+          bubbles: true,
+          composed: true,
+          detail: theme,
+        }),
+      );
+    }
   }
 
   private onMenuKeydown(event: KeyboardEvent): void {
@@ -398,6 +419,34 @@ export class AppHeader extends LitElement {
                           ${this.locale === locale ? "✓" : ""}
                         </span>
                         ${translate(this.locale, locale === "fr" ? "french" : "english")}
+                      </button>
+                    `,
+                  )}
+                </div>
+                <p class="eyebrow menu-group menu-group--divided" aria-hidden="true">
+                  ${translate(this.locale, "appearance")}
+                </p>
+                <div role="group" aria-label=${translate(this.locale, "appearance")}>
+                  ${themePreferences.map(
+                    (theme) => html`
+                      <button
+                        class="menu-item"
+                        type="button"
+                        role="menuitemradio"
+                        aria-checked=${this.theme === theme}
+                        @click=${() => this.selectTheme(theme)}
+                      >
+                        <span class="check" aria-hidden="true">
+                          ${this.theme === theme ? "✓" : ""}
+                        </span>
+                        ${translate(
+                          this.locale,
+                          theme === "light"
+                            ? "themeLight"
+                            : theme === "dark"
+                              ? "themeDark"
+                              : "themeSystem",
+                        )}
                       </button>
                     `,
                   )}
