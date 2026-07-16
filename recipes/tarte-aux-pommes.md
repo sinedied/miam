@@ -3,7 +3,7 @@ title: Tarte aux Pommes
 description: Une tarte aux pommes fine et croustillante, parfumée à la cannelle, pour un dessert simple et gourmand.
 language: fr
 image:
-  path: images/recipes/tarte-aux-pommes.svg
+  path: images/tarte-aux-pommes.svg
   alt: Une tarte aux pommes avec des tranches de pomme disposées en rosace sur une pâte dorée
 prepTime: 20
 cookTime: 30

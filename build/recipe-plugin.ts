@@ -51,7 +51,14 @@ export function loadRecipeModule(id: string): string | undefined {
     return undefined;
   }
   const recipes = loadRecipes().map(toClientRecipe);
-  return `export const recipes = ${JSON.stringify(recipes)};`;
+  const imports = recipes.map(
+    (recipe, index) => `import img${index} from ${JSON.stringify(`/recipes/${recipe.image}`)};`,
+  );
+  const entries = recipes.map((recipe, index) => {
+    const { image: _image, ...rest } = recipe;
+    return `{ ...${JSON.stringify(rest)}, image: img${index} }`;
+  });
+  return `${imports.join("\n")}\nexport const recipes = [${entries.join(",")}];`;
 }
 
 export function recipeContentPlugin(): Plugin {

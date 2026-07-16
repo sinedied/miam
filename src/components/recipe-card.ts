@@ -1,6 +1,6 @@
 import { css, html, LitElement } from "lit";
 import { customElement, property } from "lit/decorators.js";
-import { assetUrl } from "../lib/assets";
+import { ifDefined } from "lit/directives/if-defined.js";
 import { type Locale, translate } from "../lib/i18n";
 import { recipeHref } from "../lib/router";
 import { sharedStyles } from "../styles/component";
@@ -60,18 +60,6 @@ export class RecipeCard extends LitElement {
 
       article:hover img {
         scale: 1.04;
-      }
-
-      .language {
-        position: absolute;
-        top: var(--space-2);
-        right: var(--space-2);
-        padding: 0.25rem 0.4rem;
-        border-radius: var(--radius-sm);
-        color: var(--color-surface);
-        background: rgb(29 41 34 / 78%);
-        backdrop-filter: blur(8px);
-        font-size: 0.6rem;
       }
 
       .body {
@@ -159,17 +147,15 @@ export class RecipeCard extends LitElement {
 
   render() {
     const recipe = this.recipe;
-    const languageLabel = translate(this.locale, recipe.language === "fr" ? "french" : "english");
     const totalTime = recipe.prepTime + recipe.cookTime;
 
     return html`
-      <article lang=${recipe.language}>
+      <article lang=${ifDefined(recipe.language)}>
         <a href=${recipeHref(recipe.slug)} aria-label=${translate(this.locale, "openRecipe", {
           title: recipe.title,
         })}>
           <div class="image-wrap">
-            <img src=${assetUrl(recipe.image)} alt=${recipe.imageAlt} loading="lazy" />
-            <span class="eyebrow language">${languageLabel}</span>
+            <img src=${recipe.image} alt=${recipe.imageAlt} loading="lazy" />
           </div>
           <div class="body">
             <p class="eyebrow tags">

@@ -5,7 +5,7 @@ export const recipeFixture: Recipe = {
   title: "Tomato Tart",
   description: "A crisp tart for summer lunches.",
   language: "en",
-  image: "images/recipes/tomato-tart.svg",
+  image: "images/tomato-tart.svg",
   imageAlt: "A tomato tart on a green plate",
   prepTime: 20,
   cookTime: 35,

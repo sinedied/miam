@@ -27,7 +27,7 @@ import { marked } from "marked";
 export type RecipeLanguage = "en" | "fr";
 
 export interface RecipeImage {
-  /** Repository-local path, relative to `public/`, e.g. "images/recipes/pancakes.svg". */
+  /** Repository-local path relative to the recipes dir, e.g. "images/pancakes.svg". */
   path: string;
   /** Non-empty alt text describing the image, for accessibility. */
   alt: string;
@@ -46,7 +46,8 @@ export interface RecipeIngredient {
 export interface RecipeFrontmatter {
   title: string;
   description: string;
-  language: RecipeLanguage;
+  /** Optional declared content language; validated only when present. */
+  language?: RecipeLanguage;
   image: RecipeImage;
   /** Preparation time in minutes, positive integer. */
   prepTime: number;
@@ -103,9 +104,9 @@ export class RecipeContentError extends Error {
 
 const SLUG_PATTERN = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
 const LANGUAGES: readonly RecipeLanguage[] = ["en", "fr"];
-/** Image paths must live under this repository-local prefix (served from `public/`). */
-const IMAGE_PATH_PREFIX = "images/recipes/";
-const IMAGE_PATH_PATTERN = /^images\/recipes\/[a-zA-Z0-9][a-zA-Z0-9_.-]*\.(?:svg|png|jpe?g|webp)$/;
+/** Image paths must live under this repository-local prefix (a sibling of the recipe files). */
+const IMAGE_PATH_PREFIX = "images/";
+const IMAGE_PATH_PATTERN = /^images\/[a-zA-Z0-9][a-zA-Z0-9_.-]*\.(?:svg|png|jpe?g|webp)$/;
 
 function isSafeMarkdownLink(href: string): boolean {
   const value = href.trim();
@@ -136,11 +137,10 @@ function validateMarkdownTokens(value: unknown): string[] {
   if (token.type === "link" && typeof token.href === "string" && !isSafeMarkdownLink(token.href)) {
     return [`contains an unsafe link destination: "${token.href}"`];
   }
-  if (token.type === "image" && typeof token.href === "string") {
-    const imageIssues = validateImagePath(token.href, "Markdown image");
-    if (imageIssues.length > 0) {
-      return imageIssues;
-    }
+  if (token.type === "image") {
+    // Only the front-matter image is routed through the asset pipeline; body
+    // images would not be bundled/served, so they are rejected outright.
+    return ["must not embed images in the body; use the recipe's image field"];
   }
   return Object.values(token).flatMap(validateMarkdownTokens);
 }
@@ -341,8 +341,14 @@ export function parseRecipeMarkdown(fileName: string, raw: string): Recipe {
     pushIssue("description", "must be a non-empty string");
   }
 
-  if (typeof data.language !== "string" || !LANGUAGES.includes(data.language as RecipeLanguage)) {
-    pushIssue("language", `must be one of ${LANGUAGES.map((l) => `"${l}"`).join(", ")}`);
+  if (
+    data.language !== undefined &&
+    (typeof data.language !== "string" || !LANGUAGES.includes(data.language as RecipeLanguage))
+  ) {
+    pushIssue(
+      "language",
+      `must be one of ${LANGUAGES.map((l) => `"${l}"`).join(", ")} when provided`,
+    );
   }
 
   const image = validateImage(data.image, pushIssue);
@@ -386,7 +392,7 @@ export function parseRecipeMarkdown(fileName: string, raw: string): Recipe {
     file: fileName,
     title: (data.title as string).trim(),
     description: (data.description as string).trim(),
-    language: data.language as RecipeLanguage,
+    language: data.language as RecipeLanguage | undefined,
     // biome-ignore lint: image is guaranteed defined here since issues.length === 0
     image: image!,
     prepTime: data.prepTime as number,
@@ -404,15 +410,7 @@ export function parseRecipeMarkdown(fileName: string, raw: string): Recipe {
 export const DEFAULT_RECIPES_DIR = path.resolve(
   path.dirname(fileURLToPath(import.meta.url)),
   "..",
-  "content",
   "recipes",
-);
-
-/** Default directory containing public assets, resolved from the repository root. */
-export const DEFAULT_PUBLIC_DIR = path.resolve(
-  path.dirname(fileURLToPath(import.meta.url)),
-  "..",
-  "public",
 );
 
 /** An in-memory recipe file, as read from disk (or provided directly in tests). */
@@ -476,23 +474,21 @@ export function parseRecipes(files: RecipeFileInput[]): Recipe[] {
 }
 
 export interface LoadRecipesOptions {
-  /** Absolute directory to read `*.md` recipe files from. Defaults to `content/recipes`. */
+  /** Absolute directory to read `*.md` recipe files from. Defaults to `recipes/`. */
   dir?: string;
-  /** Absolute public asset directory used to verify recipe images. Defaults to `public/`. */
-  publicDir?: string;
 }
 
 /**
  * Reads every `*.md` recipe file in the given directory (defaults to
- * `content/recipes`) and delegates to {@link parseRecipes} for validation,
- * rendering and slug-uniqueness enforcement.
+ * `recipes/`) and delegates to {@link parseRecipes} for validation,
+ * rendering and slug-uniqueness enforcement. Also verifies that each
+ * referenced image exists as a repository-local file under the recipes dir.
  *
- * @throws {RecipeContentError} when any recipe file is malformed, invalid, or
- *   a duplicate slug is found.
+ * @throws {RecipeContentError} when any recipe file is malformed, invalid, a
+ *   duplicate slug is found, or a referenced image is missing.
  */
 export function loadRecipes(options: LoadRecipesOptions = {}): Recipe[] {
   const dir = options.dir ?? DEFAULT_RECIPES_DIR;
-  const publicDir = options.publicDir ?? DEFAULT_PUBLIC_DIR;
   const fileNames = fs
     .readdirSync(dir)
     .filter((entry) => entry.toLowerCase().endsWith(".md"))
@@ -505,11 +501,11 @@ export function loadRecipes(options: LoadRecipesOptions = {}): Recipe[] {
 
   const recipes = parseRecipes(files);
   const missingImages = recipes
-    .filter((recipe) => !fs.existsSync(path.join(publicDir, recipe.image.path)))
+    .filter((recipe) => !fs.existsSync(path.join(dir, recipe.image.path)))
     .map((recipe) => ({
       file: recipe.file,
       field: "image.path",
-      message: `referenced image does not exist under public/: "${recipe.image.path}"`,
+      message: `referenced image does not exist under the recipes directory: "${recipe.image.path}"`,
     }));
 
   if (missingImages.length > 0) {

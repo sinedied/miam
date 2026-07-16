@@ -3,7 +3,7 @@ title: Classic Tomato Soup
 description: A comforting, velvety tomato soup made from simple pantry staples.
 language: en
 image:
-  path: images/recipes/tomato-soup.svg
+  path: images/tomato-soup.svg
   alt: A bowl of red tomato soup garnished with a swirl of cream and fresh basil leaves
 prepTime: 10
 cookTime: 25

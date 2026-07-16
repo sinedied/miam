@@ -3,7 +3,7 @@ title: Quiche Lorraine
 description: Une tarte salée traditionnelle avec des lardons, de la crème et des œufs, dans une pâte croustillante.
 language: fr
 image:
-  path: images/recipes/quiche-lorraine.svg
+  path: images/quiche-lorraine.svg
   alt: Une quiche lorraine dorée dans un plat à tarte, avec des lardons visibles sur le dessus
 prepTime: 20
 cookTime: 35

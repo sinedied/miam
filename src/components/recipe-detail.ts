@@ -1,7 +1,7 @@
 import { css, html, LitElement } from "lit";
 import { customElement, property } from "lit/decorators.js";
+import { ifDefined } from "lit/directives/if-defined.js";
 import { unsafeHTML } from "lit/directives/unsafe-html.js";
-import { assetUrl } from "../lib/assets";
 import { type Locale, translate } from "../lib/i18n";
 import { sharedStyles } from "../styles/component";
 import type { Recipe } from "../types/recipe";
@@ -35,9 +35,19 @@ export class RecipeDetail extends LitElement {
         gap: var(--space-5);
       }
 
+      .layout {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) minmax(15rem, 0.44fr);
+        grid-template-areas: "hero side" "method side";
+        gap: var(--space-5) clamp(1.25rem, 4vw, 3rem);
+        align-items: start;
+      }
+
       .hero {
+        grid-area: hero;
         display: grid;
         grid-template-columns: minmax(0, 0.95fr) minmax(18rem, 1.05fr);
+        min-height: 14rem;
         overflow: hidden;
         border: 1px solid var(--color-line);
         border-radius: var(--radius-md);
@@ -45,13 +55,16 @@ export class RecipeDetail extends LitElement {
       }
 
       .hero-image {
-        aspect-ratio: 16 / 9;
+        position: relative;
         min-height: 0;
+        overflow: hidden;
         border-right: 1px solid var(--color-line);
         background: var(--color-surface-strong);
       }
 
       .hero-image img {
+        position: absolute;
+        inset: 0;
         display: block;
         width: 100%;
         height: 100%;
@@ -122,16 +135,20 @@ export class RecipeDetail extends LitElement {
         font-variant-numeric: tabular-nums;
       }
 
-      .recipe-body {
-        display: grid;
-        grid-template-columns: minmax(14rem, 0.7fr) minmax(0, 1.3fr);
-        gap: clamp(1.25rem, 4vw, 3rem);
-        align-items: start;
+      .ingredients {
+        grid-area: side;
+        align-self: stretch;
       }
 
-      .ingredients {
+      .ingredients-panel {
         position: sticky;
-        top: var(--space-4);
+        top: calc(var(--header-height) + var(--space-3));
+        /* Use the full height between the header and the footer, scrolling long lists
+           internally. The subtracted amount is the constant space below the layout
+           (footer margin + footer height + page padding ≈ 140px) plus the header, so the
+           pinned top clears the header even at the page bottom. */
+        max-height: max(14rem, calc(100vh - 210px));
+        overflow-y: auto;
         padding: var(--space-4);
         border: 1px solid var(--color-line);
         border-radius: var(--radius-md);
@@ -160,6 +177,7 @@ export class RecipeDetail extends LitElement {
       }
 
       .method {
+        grid-area: method;
         min-width: 0;
         padding: var(--space-1) 0;
       }
@@ -198,6 +216,12 @@ export class RecipeDetail extends LitElement {
       }
 
       @media (max-width: 58rem) {
+        .layout {
+          grid-template-columns: 1fr;
+          grid-template-areas: "hero" "side" "method";
+          gap: var(--space-5);
+        }
+
         .hero {
           grid-template-columns: 1fr;
         }
@@ -209,13 +233,14 @@ export class RecipeDetail extends LitElement {
           border-bottom: 1px solid var(--color-line);
         }
 
-        .recipe-body {
-          grid-template-columns: 1fr;
-          gap: var(--space-5);
+        .ingredients {
+          align-self: start;
         }
 
-        .ingredients {
+        .ingredients-panel {
           position: static;
+          max-height: none;
+          overflow: visible;
         }
       }
 
@@ -247,57 +272,61 @@ export class RecipeDetail extends LitElement {
 
   render() {
     const recipe = this.recipe;
-    const languageLabel = translate(this.locale, recipe.language === "fr" ? "french" : "english");
 
     return html`
       <a class="back" href="#/">${translate(this.locale, "backToRecipes")}</a>
-      <article lang=${recipe.language}>
-        <section class="hero">
-          <div class="hero-image">
-            <img src=${assetUrl(recipe.image)} alt=${recipe.imageAlt} />
-          </div>
-          <div class="summary">
-            <div class="identity">
-              <span class="eyebrow">${recipe.cuisine}</span>
-              <span class="eyebrow">
-                ${translate(this.locale, "recipeLanguage")}: ${languageLabel}
-              </span>
+      <article lang=${ifDefined(recipe.language)}>
+        <div class="layout">
+          <section class="hero">
+            <div class="hero-image">
+              <img src=${recipe.image} alt=${recipe.imageAlt} />
             </div>
-            <h1>${recipe.title}</h1>
-            <p class="description">${recipe.description}</p>
-            <dl>
-              <div>
-                <dt>${translate(this.locale, "prepTime")}</dt>
-                <dd>${recipe.prepTime} min</dd>
+            <div class="summary">
+              <div class="identity">
+                <span class="eyebrow">${recipe.cuisine}</span>
               </div>
-              <div>
-                <dt>${translate(this.locale, "cookTime")}</dt>
-                <dd>${recipe.cookTime} min</dd>
-              </div>
-              <div>
-                <dt>${translate(this.locale, "totalTime")}</dt>
-                <dd>${recipe.prepTime + recipe.cookTime} min</dd>
-              </div>
-              <div>
-                <dt>${translate(this.locale, "servings")}</dt>
-                <dd>${recipe.servings}</dd>
-              </div>
-            </dl>
-          </div>
-        </section>
+              <h1>${recipe.title}</h1>
+              <p class="description">${recipe.description}</p>
+              <dl>
+                <div>
+                  <dt>${translate(this.locale, "prepTime")}</dt>
+                  <dd>${recipe.prepTime} min</dd>
+                </div>
+                <div>
+                  <dt>${translate(this.locale, "cookTime")}</dt>
+                  <dd>${recipe.cookTime} min</dd>
+                </div>
+                <div>
+                  <dt>${translate(this.locale, "totalTime")}</dt>
+                  <dd>${recipe.prepTime + recipe.cookTime} min</dd>
+                </div>
+                <div>
+                  <dt>${translate(this.locale, "servings")}</dt>
+                  <dd>${recipe.servings}</dd>
+                </div>
+              </dl>
+            </div>
+          </section>
 
-        <section class="recipe-body">
           <aside class="ingredients">
-            <h2>${translate(this.locale, "ingredients")}</h2>
-            <ul>
-              ${recipe.ingredients.map((ingredient) => html`<li>${ingredient}</li>`)}
-            </ul>
+            <div
+              class="ingredients-panel"
+              role="region"
+              tabindex="0"
+              aria-labelledby="ingredients-heading"
+            >
+              <h2 id="ingredients-heading">${translate(this.locale, "ingredients")}</h2>
+              <ul>
+                ${recipe.ingredients.map((ingredient) => html`<li>${ingredient}</li>`)}
+              </ul>
+            </div>
           </aside>
+
           <div class="method">
             <h2>${translate(this.locale, "instructions")}</h2>
             <div class="markdown">${unsafeHTML(recipe.instructionsHtml)}</div>
           </div>
-        </section>
+        </div>
       </article>
     `;
   }

@@ -33,6 +33,7 @@
   --radius-md: 0.65rem;
   --radius-lg: 1rem;
   --content-width: 78rem;
+  --header-height: 3.25rem;
 }
 
 * {
@@ -42,6 +43,7 @@
 html {
   min-width: 20rem;
   min-height: 100%;
+  font-size: 112.5%;
   background: var(--color-canvas);
   scroll-behavior: smooth;
 }

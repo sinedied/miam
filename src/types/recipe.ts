@@ -4,7 +4,7 @@ export interface Recipe {
   readonly slug: string;
   readonly title: string;
   readonly description: string;
-  readonly language: RecipeLanguage;
+  readonly language?: RecipeLanguage;
   readonly image: string;
   readonly imageAlt: string;
   readonly prepTime: number;

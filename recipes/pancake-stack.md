@@ -3,7 +3,7 @@ title: Fluffy Pancake Stack
 description: A tall stack of soft, buttery pancakes perfect for a lazy weekend breakfast.
 language: en
 image:
-  path: images/recipes/pancake-stack.svg
+  path: images/pancake-stack.svg
   alt: A stack of golden pancakes topped with a pat of butter and drizzled maple syrup
 prepTime: 10
 cookTime: 15

@@ -26,7 +26,7 @@ describe("recipe content client adapter", () => {
     }
 
     const recipe = toClientRecipe(contentRecipe);
-    expect(recipe.image).toMatch(/^images\/recipes\//);
+    expect(recipe.image).toMatch(/^images\//);
     expect(recipe.imageAlt).toBe(contentRecipe.image.alt);
     expect(recipe.instructionsHtml).toBe(contentRecipe.html);
     expect(recipe.ingredients.every((ingredient) => typeof ingredient === "string")).toBe(true);
@@ -34,7 +34,7 @@ describe("recipe content client adapter", () => {
     expect(recipe).not.toHaveProperty("file");
   });
 
-  it("resolves and loads the Vite virtual module", () => {
+  it("resolves and loads the Vite virtual module with hashed image imports", () => {
     const resolvedId = resolveRecipeModuleId(RECIPE_CONTENT_MODULE_ID);
     expect(resolvedId).toBe(`\0${RECIPE_CONTENT_MODULE_ID}`);
     expect(loadRecipeModule("another-module")).toBeUndefined();
@@ -42,6 +42,8 @@ describe("recipe content client adapter", () => {
     const moduleSource = resolvedId ? loadRecipeModule(resolvedId) : undefined;
     expect(moduleSource).toContain("export const recipes =");
     expect(moduleSource).toContain("pancake-stack");
+    expect(moduleSource).toContain('import img0 from "/recipes/images/');
+    expect(moduleSource).toContain("image: img0");
   });
 
   it("recognizes recipe Markdown files independent of relative path syntax", () => {

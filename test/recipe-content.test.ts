@@ -18,7 +18,7 @@ title: Fluffy Pancake Stack
 description: A tall stack of soft, buttery pancakes.
 language: en
 image:
-  path: images/recipes/pancake-stack.svg
+  path: images/pancake-stack.svg
   alt: A stack of golden pancakes
 prepTime: 10
 cookTime: 15
@@ -65,7 +65,7 @@ describe("parseRecipeMarkdown - valid input", () => {
     expect(recipe.title).toBe("Fluffy Pancake Stack");
     expect(recipe.language).toBe("en");
     expect(recipe.image).toEqual({
-      path: "images/recipes/pancake-stack.svg",
+      path: "images/pancake-stack.svg",
       alt: "A stack of golden pancakes",
     });
     expect(recipe.prepTime).toBe(10);
@@ -98,7 +98,7 @@ describe("parseRecipeMarkdown - valid input", () => {
 description: Une tarte salée traditionnelle avec des lardons et de la crème.
 language: fr
 image:
-  path: images/recipes/quiche-lorraine.svg
+  path: images/quiche-lorraine.svg
   alt: Une quiche lorraine dorée
 prepTime: 20
 cookTime: 35
@@ -120,6 +120,27 @@ ingredients:
     expect(recipe.description).toContain("tarte salée");
     expect(recipe.html).toContain("Préparation");
   });
+
+  it("treats language as an optional field", () => {
+    const raw = withFrontmatter(
+      `title: No Language
+description: A recipe without a declared language.
+image:
+  path: images/x.svg
+  alt: alt text
+prepTime: 10
+cookTime: 10
+servings: 2
+cuisine: Test
+tags:
+  - test
+ingredients:
+  - name: water`,
+    );
+
+    const recipe = parseRecipeMarkdown("no-language.md", raw);
+    expect(recipe.language).toBeUndefined();
+  });
 });
 
 describe("parseRecipeMarkdown - missing/invalid fields", () => {
@@ -128,7 +149,7 @@ describe("parseRecipeMarkdown - missing/invalid fields", () => {
       `description: Missing title.
 language: en
 image:
-  path: images/recipes/x.svg
+  path: images/x.svg
   alt: alt text
 prepTime: 10
 cookTime: 10
@@ -158,7 +179,7 @@ ingredients:
 description: A recipe with an unsupported language.
 language: de
 image:
-  path: images/recipes/x.svg
+  path: images/x.svg
   alt: alt text
 prepTime: 10
 cookTime: 10
@@ -185,7 +206,7 @@ ingredients:
 description: A recipe with no tags.
 language: en
 image:
-  path: images/recipes/x.svg
+  path: images/x.svg
   alt: alt text
 prepTime: 10
 cookTime: 10
@@ -211,7 +232,7 @@ ingredients:
 description: A recipe with no ingredients.
 language: en
 image:
-  path: images/recipes/x.svg
+  path: images/x.svg
   alt: alt text
 prepTime: 10
 cookTime: 10
@@ -237,7 +258,7 @@ ingredients: []`,
 description: A recipe with an invalid ingredient quantity.
 language: en
 image:
-  path: images/recipes/x.svg
+  path: images/x.svg
   alt: alt text
 prepTime: 10
 cookTime: 10
@@ -267,7 +288,7 @@ ingredients:
 description: A recipe with no instructions.
 language: en
 image:
-  path: images/recipes/x.svg
+  path: images/x.svg
   alt: alt text
 prepTime: 10
 cookTime: 10
@@ -299,7 +320,7 @@ ingredients:
 description: A recipe with invalid numeric ranges.
 language: en
 image:
-  path: images/recipes/x.svg
+  path: images/x.svg
   alt: alt text
 prepTime: ${value}
 cookTime: ${value}
@@ -394,15 +415,16 @@ describe("parseRecipeMarkdown - trusted Markdown boundary", () => {
     ["an entity-obfuscated JavaScript link", "[open me](jav&#x61;script:alert(1))"],
     ["a data link", "[open me](data:text/html,unsafe)"],
     ["a remote image", "![tracking pixel](https://example.com/pixel.png)"],
+    ["a repository-local body image", "![Pancakes](images/pancake-stack.svg)"],
   ])("rejects %s", (_label, markdown) => {
     const raw = validFrontmatter.replace("1. Whisk the dry ingredients together.", markdown);
     expect(() => parseRecipeMarkdown("unsafe-link.md", raw)).toThrowError(/body/);
   });
 
-  it("allows HTTPS links and repository-local Markdown images", () => {
+  it("allows safe HTTPS and mailto links in the body", () => {
     const raw = validFrontmatter.replace(
       "1. Whisk the dry ingredients together.",
-      "[Reference](https://example.com) and ![Pancakes](images/recipes/pancake-stack.svg)",
+      "See [the reference](https://example.com) or [email us](mailto:cook@example.com).",
     );
     expect(() => parseRecipeMarkdown("safe-links.md", raw)).not.toThrow();
   });
@@ -432,7 +454,7 @@ ingredients:
     ["an external https URL", "https://example.com/image.png"],
     ["a protocol-relative URL", "//example.com/image.png"],
     ["a path outside images/recipes", "images/other/photo.svg"],
-    ["a path with no recognized image extension", "images/recipes/photo.txt"],
+    ["a path with no recognized image extension", "images/photo.txt"],
   ])('rejects %s: "%s"', (_label, imagePath) => {
     const raw = withFrontmatter(baseFrontmatter(imagePath));
 
@@ -446,14 +468,14 @@ ingredients:
   });
 
   it("accepts a safe, repository-local image path", () => {
-    const raw = withFrontmatter(baseFrontmatter("images/recipes/safe-photo.svg"));
+    const raw = withFrontmatter(baseFrontmatter("images/safe-photo.svg"));
     const recipe = parseRecipeMarkdown("safe-image.md", raw);
-    expect(recipe.image.path).toBe("images/recipes/safe-photo.svg");
+    expect(recipe.image.path).toBe("images/safe-photo.svg");
   });
 });
 
 describe("loadRecipes - real content directory", () => {
-  it("loads all sample recipes from content/recipes with no validation errors", () => {
+  it("loads all sample recipes from the recipes directory with no validation errors", () => {
     const recipes = loadRecipes();
 
     expect(recipes.length).toBeGreaterThanOrEqual(4);
@@ -473,8 +495,8 @@ describe("loadRecipes - real content directory", () => {
     }
   });
 
-  it("resolves DEFAULT_RECIPES_DIR to the content/recipes directory", () => {
-    expect(DEFAULT_RECIPES_DIR.endsWith(path.join("content", "recipes"))).toBe(true);
+  it("resolves DEFAULT_RECIPES_DIR to the recipes directory", () => {
+    expect(DEFAULT_RECIPES_DIR.endsWith("recipes")).toBe(true);
     expect(fs.existsSync(DEFAULT_RECIPES_DIR)).toBe(true);
   });
 });
@@ -483,15 +505,11 @@ describe("loadRecipes - fixture directories", () => {
   it("rejects a recipe whose validated local image file is missing", () => {
     const fixtureRoot = fs.mkdtempSync(path.join(os.tmpdir(), "miam-recipes-"));
     const recipesDir = path.join(fixtureRoot, "recipes");
-    const publicDir = path.join(fixtureRoot, "public");
     fs.mkdirSync(recipesDir);
-    fs.mkdirSync(publicDir);
     fs.writeFileSync(path.join(recipesDir, "pancake-stack.md"), validFrontmatter);
 
     try {
-      expect(() => loadRecipes({ dir: recipesDir, publicDir })).toThrowError(
-        /image\.path.*does not exist/s,
-      );
+      expect(() => loadRecipes({ dir: recipesDir })).toThrowError(/image\.path.*does not exist/s);
     } finally {
       fs.rmSync(fixtureRoot, { recursive: true, force: true });
     }

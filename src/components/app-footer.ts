@@ -11,7 +11,7 @@ export class AppFooter extends LitElement {
     css`
       :host {
         display: block;
-        margin-top: var(--space-8);
+        margin-top: var(--space-6);
         border-top: 1px solid var(--color-line);
       }
 
@@ -20,7 +20,7 @@ export class AppFooter extends LitElement {
         align-items: center;
         justify-content: space-between;
         width: min(100% - 2rem, var(--content-width));
-        min-height: 6rem;
+        min-height: 4rem;
         margin-inline: auto;
         gap: var(--space-4);
         color: var(--color-ink-muted);
@@ -51,7 +51,7 @@ export class AppFooter extends LitElement {
           align-items: flex-start;
           flex-direction: column;
           justify-content: center;
-          min-height: 7rem;
+          min-height: 5rem;
         }
       }
     `,

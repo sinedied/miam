@@ -59,7 +59,7 @@ export class MiamApp extends LitElement {
 
       .grid {
         display: grid;
-        grid-template-columns: repeat(auto-fill, minmax(11rem, 1fr));
+        grid-template-columns: repeat(auto-fill, minmax(9.5rem, 1fr));
         gap: var(--space-3);
       }
 
@@ -115,7 +115,7 @@ export class MiamApp extends LitElement {
         }
 
         .grid {
-          grid-template-columns: repeat(auto-fill, minmax(10rem, 1fr));
+          grid-template-columns: repeat(auto-fill, minmax(8.5rem, 1fr));
           gap: var(--space-3);
         }
       }

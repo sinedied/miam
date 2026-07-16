@@ -30,6 +30,11 @@ Guidance for coding agents working on **miam**, a read-only MVP family recipe ca
 
 ## Recipe content & validation
 
+- Recipe Markdown files live in `recipes/*.md`; their images live in `recipes/images/`, referenced
+  from front matter as `image.path: images/<file>` (repository-local, no subfolders/URLs). Images
+  are imported by the Vite plugin as hashed, base-path-safe assets.
+- `language` is an **optional** front-matter field (validated only when present); it is not
+  displayed in the UI.
 - Recipe files (Markdown + YAML frontmatter) must be **strictly validated** on load (required fields, types, allowed values, image references, etc.).
 - **No silent parsing failures**: invalid or malformed recipes must produce a clear, visible error (thrown error, logged warning surfaced in UI/build, or failed build) — never be silently skipped or dropped.
 - Validate at build/load time so bad content is caught early, not just at render time.
