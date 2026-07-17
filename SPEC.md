@@ -65,9 +65,12 @@ Client-side routing is **hash-based** with two routes:
 - **Search box**: shown **only on the catalog** view. Has a search icon, a
   clearable text input, and an accessible label/placeholder. A clear (×) button
   appears when there is a query and returns focus to the input.
-- **Settings menu**: a single settings button that toggles a popup menu.
-  - Contains a **language selector** (English / Français) as radio-style menu
-    items with a checkmark on the active locale.
+- **Settings menu**: a single settings button that toggles a popup menu with
+  two grouped sections (see [Theming](#theming) for appearance behavior):
+  - A **Language** group (English / Français) as radio-style menu items with a
+    checkmark on the active locale.
+  - An **Appearance** group (System / Light / Dark) as radio-style menu items
+    with a checkmark on the active theme preference.
   - Structured to allow future settings to be added.
   - Fully keyboard operable: open/close, arrow-key navigation between items,
     `Escape` to close (returns focus to the button), and closes on outside
@@ -81,7 +84,8 @@ Client-side routing is **hash-based** with two routes:
 - A **result count** line, announced politely to assistive tech (e.g. "12
   recipes" / "1 recipe" / "0 recipes"), reflecting the current search.
 - A **responsive grid of recipe cards**. Each card shows:
-  - Cover image (lazy-loaded, with alt text).
+  - Cover image (lazy-loaded, with alt text) — or a **decorative placeholder**
+    icon when the recipe has no image.
   - Up to three tags.
   - Title.
   - Short description (clamped to ~2 lines).
@@ -97,7 +101,8 @@ Client-side routing is **hash-based** with two routes:
 
 - **Back link** to the full catalog.
 - **Hero** region combining:
-  - The recipe image (with alt text).
+  - The recipe image (with alt text) — or a **decorative placeholder** icon
+    when the recipe has no image.
   - A **summary**: cuisine label (eyebrow), title, description, and a
     definition list of **Prep**, **Cook**, **Total** (prep + cook), and
     **Servings** — all in minutes / counts.
@@ -136,6 +141,25 @@ Client-side routing is **hash-based** with two routes:
 - Translations are centralized and structured so missing keys are easy to spot.
 - Messages support simple `{placeholder}` interpolation (e.g. counts, dates,
   titles).
+
+## Theming
+
+The app supports **light and dark** appearances with a user-selectable
+preference exposed in the settings menu's **Appearance** group.
+
+- **Preference values**: `system` (default), `light`, `dark`.
+  - `system` follows the OS setting via `prefers-color-scheme`.
+  - `light` / `dark` force the theme regardless of the OS.
+- The preference is **persisted** to `localStorage` and restored on load
+  (defaults to `system` when unset or unreadable).
+- The chosen theme is applied by toggling a `data-theme` attribute on the
+  document root; `system` removes the override so CSS media queries take over.
+- To avoid a flash of the wrong theme, a small inline script in the HTML applies
+  the saved theme **before first paint**.
+- The browser chrome color (`theme-color` meta) is kept in sync with the active
+  light/dark background.
+- Colors are defined with CSS variables (light and dark token sets); there is no
+  decorative background texture.
 
 ## Search
 
@@ -179,14 +203,18 @@ recipes/
 | `title`       | string                    | yes      | non-empty                                                             |
 | `description` | string                    | yes      | non-empty                                                             |
 | `language`    | `"en"` \| `"fr"`          | no       | validated only when present; **not displayed** in the UI             |
-| `image.path`  | string                    | yes      | repository-local path under `images/`, image extension (svg/png/jpg/jpeg/webp), no URLs, no absolute paths, no traversal |
-| `image.alt`   | string                    | yes      | non-empty (accessibility)                                             |
+| `image.path`  | string                    | no       | when the `image` object is present: repository-local path under `images/`, image extension (svg/png/jpg/jpeg/webp), no URLs, no absolute paths, no traversal |
+| `image.alt`   | string                    | if image | required (non-empty) **when an `image` is provided**, for accessibility |
 | `prepTime`    | number (minutes)          | yes      | positive integer                                                      |
 | `cookTime`    | number (minutes)          | yes      | positive integer                                                      |
 | `servings`    | number                    | yes      | positive integer                                                      |
 | `cuisine`     | string                    | yes      | non-empty                                                             |
 | `tags`        | string[]                  | yes      | non-empty array of non-empty strings                                  |
 | `ingredients` | object[]                  | yes      | non-empty array; each has `name` (required, non-empty), optional `quantity` (positive number), optional `unit` (non-empty) |
+
+The whole `image` object is **optional**. When omitted, the recipe renders with a
+decorative placeholder in the catalog card and detail hero. When present, both
+`image.path` and `image.alt` are required and validated.
 
 **Body** (Markdown after frontmatter)
 
@@ -214,8 +242,9 @@ produce a clear, visible error, never be silently skipped.
   **file** and **field**.
 - Validation includes: required fields and types, allowed `language` values,
   positive integers for times/servings, non-empty tags/ingredients, image path
-  safety/locality, slug format and uniqueness, safe Markdown body, and that
-  each referenced image file **exists** on disk.
+  safety/locality **(validated only when an image is provided)**, slug format
+  and uniqueness, safe Markdown body, and that each referenced image file
+  **exists** on disk.
 - Validation runs at build/load time (via a Vite plugin), so bad content fails
   the build early rather than at render time.
 
@@ -236,7 +265,8 @@ produce a clear, visible error, never be silently skipped.
 - Fully **keyboard-navigable** and screen-reader friendly: semantic HTML, ARIA
   where needed, focus management on route changes, a skip-to-content link, and
   visually-hidden labels for icon-only metadata.
-- All recipe images require **alt text** (enforced by validation).
+- Recipe images, when present, require **alt text** (enforced by validation);
+  recipes without an image use a decorative, `aria-hidden` placeholder.
 - Live-region announcement for search result counts.
 - Sufficient color contrast and visible focus states; honors
   `prefers-reduced-motion`.
