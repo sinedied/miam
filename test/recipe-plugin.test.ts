@@ -5,7 +5,6 @@ import {
   RECIPE_CONTENT_MODULE_ID,
 } from "../build/recipe-content";
 import {
-  formatIngredient,
   isRecipeContentFile,
   loadRecipeModule,
   resolveRecipeModuleId,
@@ -13,9 +12,18 @@ import {
 } from "../build/recipe-plugin";
 
 describe("recipe content client adapter", () => {
-  it("formats structured ingredients without empty placeholders", () => {
-    expect(formatIngredient({ name: "flour", quantity: 250, unit: "g" })).toBe("250 g flour");
-    expect(formatIngredient({ name: "salt" })).toBe("salt");
+  it("passes structured ingredients through to the client model", () => {
+    const contentRecipe = loadRecipes()[0];
+    expect(contentRecipe).toBeDefined();
+    if (!contentRecipe) {
+      return;
+    }
+
+    const recipe = toClientRecipe(contentRecipe);
+    expect(recipe.ingredients).toBe(contentRecipe.ingredients);
+    expect(recipe.ingredients.every((ingredient) => typeof ingredient.name === "string")).toBe(
+      true,
+    );
   });
 
   it("exposes only the typed browser recipe model", () => {
@@ -29,7 +37,9 @@ describe("recipe content client adapter", () => {
     expect(recipe.image).toMatch(/^images\//);
     expect(recipe.imageAlt).toBe(contentRecipe.image?.alt);
     expect(recipe.instructionsHtml).toBe(contentRecipe.html);
-    expect(recipe.ingredients.every((ingredient) => typeof ingredient === "string")).toBe(true);
+    expect(recipe.ingredients.every((ingredient) => typeof ingredient.name === "string")).toBe(
+      true,
+    );
     expect(recipe).not.toHaveProperty("rawBody");
     expect(recipe).not.toHaveProperty("file");
   });

@@ -1,11 +1,15 @@
-import { css, html, LitElement } from "lit";
-import { customElement, property } from "lit/decorators.js";
+import { css, html, LitElement, type PropertyValues } from "lit";
+import { customElement, property, state } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
 import { unsafeHTML } from "lit/directives/unsafe-html.js";
 import { type Locale, translate } from "../lib/i18n";
+import { formatIngredient } from "../lib/ingredients";
 import { sharedStyles } from "../styles/component";
 import type { Recipe } from "../types/recipe";
 import { imagePlaceholder } from "./image-placeholder";
+
+const MIN_SERVINGS = 1;
+const MAX_SERVINGS = 99;
 
 @customElement("recipe-detail")
 export class RecipeDetail extends LitElement {
@@ -127,7 +131,7 @@ export class RecipeDetail extends LitElement {
 
       dl {
         display: grid;
-        grid-template-columns: repeat(4, minmax(0, 1fr));
+        grid-template-columns: repeat(3, minmax(0, 1fr));
         margin: var(--space-3) 0 0;
         border-top: 1px solid var(--color-line);
         border-bottom: 1px solid var(--color-line);
@@ -191,6 +195,62 @@ export class RecipeDetail extends LitElement {
         padding: 0.55rem 0;
         border-top: 1px solid var(--color-line);
         line-height: 1.45;
+      }
+
+      .ingredients-panel > ul > li:first-child {
+        border-top: 0;
+        padding-top: 0;
+      }
+
+      .servings {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: var(--space-3);
+        margin: 0 0 var(--space-3);
+        padding-bottom: var(--space-3);
+        border-bottom: 1px solid var(--color-line);
+      }
+
+      .servings-label {
+        color: var(--color-ink-muted);
+      }
+
+      .stepper {
+        display: inline-flex;
+        align-items: center;
+        gap: var(--space-2);
+      }
+
+      .stepper button {
+        display: grid;
+        width: 1.9rem;
+        height: 1.9rem;
+        place-items: center;
+        border: 1px solid var(--color-line);
+        border-radius: 999px;
+        color: var(--color-ink);
+        background: var(--color-surface);
+        font-size: 1.15rem;
+        line-height: 1;
+        cursor: pointer;
+      }
+
+      .stepper button:hover:not([aria-disabled="true"]) {
+        border-color: var(--color-ink-muted);
+        background: var(--color-surface-strong);
+      }
+
+      .stepper button[aria-disabled="true"] {
+        opacity: 0.4;
+        cursor: not-allowed;
+      }
+
+      .servings-value {
+        min-width: 1.75rem;
+        font-weight: 700;
+        font-variant-numeric: tabular-nums;
+        text-align: center;
       }
 
       .method {
@@ -287,8 +347,24 @@ export class RecipeDetail extends LitElement {
   @property({ attribute: false })
   locale: Locale = "en";
 
+  @state()
+  private servings = 0;
+
+  willUpdate(changed: PropertyValues<this>): void {
+    // Reset the servings to the recipe's default whenever the recipe changes,
+    // so opening a recipe always starts from its authored serving count.
+    if (changed.has("recipe") && this.recipe) {
+      this.servings = this.recipe.servings;
+    }
+  }
+
+  private adjustServings(delta: number): void {
+    this.servings = Math.min(MAX_SERVINGS, Math.max(MIN_SERVINGS, this.servings + delta));
+  }
+
   render() {
     const recipe = this.recipe;
+    const factor = recipe.servings > 0 ? this.servings / recipe.servings : 1;
 
     return html`
       <a class="back" href="#/">${translate(this.locale, "backToRecipes")}</a>
@@ -321,10 +397,6 @@ export class RecipeDetail extends LitElement {
                   <dt>${translate(this.locale, "totalTime")}</dt>
                   <dd>${recipe.prepTime + recipe.cookTime} min</dd>
                 </div>
-                <div>
-                  <dt>${translate(this.locale, "servings")}</dt>
-                  <dd>${recipe.servings}</dd>
-                </div>
               </dl>
             </div>
           </section>
@@ -337,8 +409,32 @@ export class RecipeDetail extends LitElement {
               aria-labelledby="ingredients-heading"
             >
               <h2 id="ingredients-heading">${translate(this.locale, "ingredients")}</h2>
+              <div class="servings">
+                <span class="eyebrow servings-label">${translate(this.locale, "servings")}</span>
+                <div class="stepper">
+                  <button
+                    type="button"
+                    aria-label=${translate(this.locale, "decreaseServings")}
+                    aria-disabled=${this.servings <= MIN_SERVINGS}
+                    @click=${() => this.adjustServings(-1)}
+                  >
+                    −
+                  </button>
+                  <span class="servings-value" aria-live="polite">${this.servings}</span>
+                  <button
+                    type="button"
+                    aria-label=${translate(this.locale, "increaseServings")}
+                    aria-disabled=${this.servings >= MAX_SERVINGS}
+                    @click=${() => this.adjustServings(1)}
+                  >
+                    +
+                  </button>
+                </div>
+              </div>
               <ul>
-                ${recipe.ingredients.map((ingredient) => html`<li>${ingredient}</li>`)}
+                ${recipe.ingredients.map(
+                  (ingredient) => html`<li>${formatIngredient(ingredient, factor)}</li>`,
+                )}
               </ul>
             </div>
           </aside>

@@ -6,7 +6,6 @@ import {
   DEFAULT_RECIPES_DIR,
   loadRecipes,
   RECIPE_CONTENT_MODULE_ID,
-  type RecipeIngredient,
 } from "./recipe-content";
 
 const RESOLVED_MODULE_ID = `\0${RECIPE_CONTENT_MODULE_ID}`;
@@ -16,12 +15,6 @@ export function isRecipeContentFile(file: string): boolean {
     path.dirname(path.resolve(file)) === path.resolve(DEFAULT_RECIPES_DIR) &&
     path.extname(file).toLowerCase() === ".md"
   );
-}
-
-export function formatIngredient(ingredient: RecipeIngredient): string {
-  return [ingredient.quantity, ingredient.unit, ingredient.name]
-    .filter((part) => part !== undefined)
-    .join(" ");
 }
 
 export function toClientRecipe(recipe: ContentRecipe): ClientRecipe {
@@ -37,7 +30,7 @@ export function toClientRecipe(recipe: ContentRecipe): ClientRecipe {
     servings: recipe.servings,
     cuisine: recipe.cuisine,
     tags: recipe.tags,
-    ingredients: recipe.ingredients.map(formatIngredient),
+    ingredients: recipe.ingredients,
     instructionsHtml: recipe.html,
   };
 }

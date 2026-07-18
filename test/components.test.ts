@@ -188,6 +188,7 @@ describe("recipe-detail", () => {
     await detail.updateComplete;
 
     expect(detail.shadowRoot?.textContent).toContain("4 tomatoes");
+    expect(detail.shadowRoot?.textContent).toContain("1 sheet puff pastry");
     expect(detail.shadowRoot?.textContent).toContain("55 min");
     expect(detail.shadowRoot?.querySelectorAll(".markdown li")).toHaveLength(2);
     expect(detail.shadowRoot?.querySelector("img")?.getAttribute("alt")).toBe(
@@ -195,20 +196,60 @@ describe("recipe-detail", () => {
     );
     expect(detail.shadowRoot?.querySelector("article")?.getAttribute("lang")).toBe("en");
   });
+
+  it("scales ingredient quantities with the servings stepper and clamps/resets", async () => {
+    const detail = document.createElement("recipe-detail") as RecipeDetail;
+    detail.recipe = recipeFixture;
+    detail.locale = "en";
+    document.body.append(detail);
+    await detail.updateComplete;
+
+    const value = () => detail.shadowRoot?.querySelector(".servings-value")?.textContent?.trim();
+    const buttons = () => [
+      ...(detail.shadowRoot?.querySelectorAll<HTMLButtonElement>(".stepper button") ?? []),
+    ];
+    const [minus, plus] = buttons();
+    expect(value()).toBe("4");
+
+    // Increase to 6 servings: 4 tomatoes -> 6, 1 sheet -> 1.5 sheet.
+    plus?.click();
+    plus?.click();
+    await detail.updateComplete;
+    expect(value()).toBe("6");
+    expect(detail.shadowRoot?.textContent).toContain("6 tomatoes");
+    expect(detail.shadowRoot?.textContent).toContain("1.5 sheet puff pastry");
+
+    // Clamp at the minimum of 1.
+    for (let i = 0; i < 10; i++) {
+      minus?.click();
+    }
+    await detail.updateComplete;
+    expect(value()).toBe("1");
+    expect(
+      detail.shadowRoot
+        ?.querySelector<HTMLButtonElement>(".stepper button")
+        ?.getAttribute("aria-disabled"),
+    ).toBe("true");
+
+    // Switching recipes resets to that recipe's default servings.
+    detail.recipe = { ...recipeFixture, slug: "other", servings: 8 };
+    await detail.updateComplete;
+    expect(value()).toBe("8");
+  });
 });
 
 describe("app-footer", () => {
-  it("renders deployed revision metadata and the repository link", async () => {
+  it("renders the commit and repository link as a subtle line", async () => {
     const footer = document.createElement("app-footer") as AppFooter;
     footer.locale = "en";
     document.body.append(footer);
     await footer.updateComplete;
 
     expect(footer.shadowRoot?.textContent).toContain("test123");
-    expect(footer.shadowRoot?.textContent).toContain("deployed");
-    expect(footer.shadowRoot?.querySelector("a")?.getAttribute("href")).toBe(
-      "https://github.com/example/miam",
-    );
-    expect(footer.shadowRoot?.querySelector("a")?.getAttribute("target")).toBe("_blank");
+    expect(footer.shadowRoot?.textContent).not.toContain("deployed");
+    const link = footer.shadowRoot?.querySelector("a");
+    expect(link?.getAttribute("href")).toBe("https://github.com/example/miam");
+    expect(link?.getAttribute("target")).toBe("_blank");
+    expect(link?.textContent).toContain("GitHub");
   });
 });

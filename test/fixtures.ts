@@ -12,6 +12,9 @@ export const recipeFixture: Recipe = {
   servings: 4,
   cuisine: "French",
   tags: ["summer", "vegetarian"],
-  ingredients: ["4 tomatoes", "1 sheet puff pastry"],
+  ingredients: [
+    { name: "tomatoes", quantity: 4 },
+    { name: "puff pastry", quantity: 1, unit: "sheet" },
+  ],
   instructionsHtml: "<ol><li>Slice the tomatoes.</li><li>Bake until crisp.</li></ol>",
 };

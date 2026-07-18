@@ -38,7 +38,9 @@ function getSearchContext(recipes: readonly Recipe[]): SearchContext {
     recipes.map((recipe) => ({
       id: recipe.slug,
       title: recipe.title,
-      ingredients: recipe.ingredients.join(" "),
+      ingredients: recipe.ingredients
+        .map((ingredient) => [ingredient.name, ingredient.unit].filter(Boolean).join(" "))
+        .join(" "),
       tags: recipe.tags.join(" "),
     })),
   );

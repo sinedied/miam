@@ -6,7 +6,7 @@ const frenchRecipe = {
   ...recipeFixture,
   slug: "creme-brulee",
   title: "Crème brûlée",
-  ingredients: ["Crème entière", "vanille"],
+  ingredients: [{ name: "Crème entière" }, { name: "vanille" }],
   tags: ["dessert"],
 };
 
@@ -44,7 +44,7 @@ describe("recipe search", () => {
       ...frenchRecipe,
       slug: "summer-salad",
       title: "Summer Salad",
-      ingredients: ["tomato", "lettuce"],
+      ingredients: [{ name: "tomato" }, { name: "lettuce" }],
     };
     expect(searchRecipes([ingredientMatch, recipeFixture], "tomato")).toEqual([
       recipeFixture,

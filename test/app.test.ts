@@ -1,5 +1,6 @@
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
 import "../src/app";
+import { recipes } from "virtual:recipes";
 import type { MiamApp } from "../src/app";
 
 function setHash(hash: string): void {
@@ -26,7 +27,7 @@ afterEach(() => {
 describe("miam-app", () => {
   it("renders the recipe catalog and filters it from the header search field", async () => {
     const app = await renderApp();
-    expect(app.shadowRoot?.querySelectorAll("recipe-card")).toHaveLength(4);
+    expect(app.shadowRoot?.querySelectorAll("recipe-card")).toHaveLength(recipes.length);
 
     const header = app.shadowRoot?.querySelector("app-header");
     const input = header?.shadowRoot?.querySelector<HTMLInputElement>("#recipe-search");

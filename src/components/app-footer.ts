@@ -1,6 +1,6 @@
 import { css, html, LitElement } from "lit";
 import { customElement, property } from "lit/decorators.js";
-import { buildInfo, formatDeploymentDate } from "../lib/build-info";
+import { buildInfo } from "../lib/build-info";
 import { type Locale, translate } from "../lib/i18n";
 import { sharedStyles } from "../styles/component";
 
@@ -11,50 +11,41 @@ export class AppFooter extends LitElement {
     css`
       :host {
         display: block;
-        margin-top: var(--space-4);
-        border-top: 1px solid var(--color-line);
+        margin-top: var(--space-3);
       }
 
       footer {
         display: flex;
         align-items: center;
-        justify-content: space-between;
+        justify-content: center;
+        flex-wrap: wrap;
+        gap: 0.35rem;
         width: min(100% - 2rem, var(--content-width));
-        min-height: 2.75rem;
+        min-height: 2rem;
         margin-inline: auto;
-        gap: var(--space-4);
+        padding-block: var(--space-2);
         color: var(--color-ink-muted);
-        font-size: 0.8rem;
+        font-size: 0.72rem;
       }
 
-      p {
-        margin: 0;
+      .sep {
+        opacity: 0.6;
       }
 
       code {
-        padding: 0.2rem 0.35rem;
-        border: 1px solid var(--color-line);
-        border-radius: var(--radius-sm);
-        color: var(--color-ink);
-        background: var(--color-surface);
         font-family: ui-monospace, "SFMono-Regular", Consolas, monospace;
       }
 
       a {
-        color: var(--color-leaf);
-        font-weight: 700;
+        color: inherit;
+        text-decoration: underline;
+        text-decoration-color: var(--color-line);
         text-underline-offset: 0.2em;
       }
 
-      @media (max-width: 38rem) {
-        footer {
-          align-items: flex-start;
-          flex-direction: column;
-          justify-content: center;
-          gap: var(--space-1);
-          min-height: 3.5rem;
-          padding-block: var(--space-2);
-        }
+      a:hover {
+        color: var(--color-ink);
+        text-decoration-color: currentColor;
       }
     `,
   ];
@@ -63,20 +54,13 @@ export class AppFooter extends LitElement {
   locale: Locale = "en";
 
   render() {
-    const deployedAt = formatDeploymentDate(buildInfo.deployedAt, this.locale);
-    const deploymentLabel = deployedAt
-      ? translate(this.locale, "footerDeployed", { date: deployedAt })
-      : translate(this.locale, "footerDevelopment");
-
     return html`
       <footer>
-        <p>
-          ${translate(this.locale, "footerBuiltFrom")}
-          <code>${buildInfo.commit}</code> · ${deploymentLabel}
-        </p>
+        <code>${buildInfo.commit}</code>
         ${
           buildInfo.repositoryUrl
             ? html`
+              <span class="sep" aria-hidden="true">·</span>
               <a href=${buildInfo.repositoryUrl} target="_blank" rel="noreferrer">
                 ${translate(this.locale, "sourceCode")}
               </a>

@@ -1,5 +1,11 @@
 export type RecipeLanguage = "en" | "fr";
 
+export interface RecipeIngredient {
+  readonly name: string;
+  readonly quantity?: number;
+  readonly unit?: string;
+}
+
 export interface Recipe {
   readonly slug: string;
   readonly title: string;
@@ -12,6 +18,6 @@ export interface Recipe {
   readonly servings: number;
   readonly cuisine: string;
   readonly tags: readonly string[];
-  readonly ingredients: readonly string[];
+  readonly ingredients: readonly RecipeIngredient[];
   readonly instructionsHtml: string;
 }
