@@ -11,7 +11,8 @@ export class AppFooter extends LitElement {
     css`
       :host {
         display: block;
-        margin-top: var(--space-3);
+        margin-top: var(--space-4);
+        border-top: 1px solid var(--color-line);
       }
 
       footer {
@@ -26,10 +27,11 @@ export class AppFooter extends LitElement {
         padding-block: var(--space-2);
         color: var(--color-ink-muted);
         font-size: 0.72rem;
+        opacity: 0.7;
       }
 
       .sep {
-        opacity: 0.6;
+        opacity: 0.85;
       }
 
       code {
