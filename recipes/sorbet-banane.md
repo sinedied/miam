@@ -4,7 +4,7 @@ description: Un sorbet banane et yaourt grec tout en douceur et impossible à ra
 language: fr
 prepTime: 5
 cookTime: 50
-servings: 6
+servings: 8
 cuisine: Française
 tags:
   - dessert
