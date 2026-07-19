@@ -27,21 +27,29 @@ describe("recipe content client adapter", () => {
   });
 
   it("exposes only the typed browser recipe model", () => {
-    const contentRecipe = loadRecipes()[0];
-    expect(contentRecipe).toBeDefined();
-    if (!contentRecipe) {
+    const recipes = loadRecipes();
+    const withImage = recipes.find((recipe) => recipe.image !== undefined);
+    const withoutImage = recipes.find((recipe) => recipe.image === undefined);
+    expect(withImage).toBeDefined();
+    if (!withImage) {
       return;
     }
 
-    const recipe = toClientRecipe(contentRecipe);
+    const recipe = toClientRecipe(withImage);
     expect(recipe.image).toMatch(/^images\//);
-    expect(recipe.imageAlt).toBe(contentRecipe.image?.alt);
-    expect(recipe.instructionsHtml).toBe(contentRecipe.html);
+    expect(recipe.imageAlt).toBe(withImage.image?.alt);
+    expect(recipe.instructionsHtml).toBe(withImage.html);
     expect(recipe.ingredients.every((ingredient) => typeof ingredient.name === "string")).toBe(
       true,
     );
     expect(recipe).not.toHaveProperty("rawBody");
     expect(recipe).not.toHaveProperty("file");
+
+    if (withoutImage) {
+      const imageless = toClientRecipe(withoutImage);
+      expect(imageless.image).toBeUndefined();
+      expect(imageless.imageAlt).toBeUndefined();
+    }
   });
 
   it("resolves and loads the Vite virtual module with hashed image imports", () => {
