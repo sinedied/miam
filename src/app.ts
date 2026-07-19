@@ -58,6 +58,7 @@ export class MiamApp extends LitElement {
         width: min(100% - 2rem, var(--content-width));
         margin-inline: auto;
         padding-block: var(--space-3) var(--space-5);
+        scroll-margin-top: var(--header-height);
       }
 
       .count {
@@ -157,7 +158,9 @@ export class MiamApp extends LitElement {
     this.updateDocumentTitle();
     globalThis.scrollTo?.({ top: 0, behavior: "instant" });
     void this.updateComplete.then(() => {
-      this.renderRoot.querySelector<HTMLElement>("main")?.focus();
+      // Move focus to the new content for a11y, but keep the page at the top:
+      // a scrolling focus would slide the hero/ingredients under the sticky header.
+      this.renderRoot.querySelector<HTMLElement>("main")?.focus({ preventScroll: true });
     });
   };
 
