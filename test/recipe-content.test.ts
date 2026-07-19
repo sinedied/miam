@@ -159,6 +159,62 @@ ingredients:
     const recipe = parseRecipeMarkdown("no-image.md", raw);
     expect(recipe.image).toBeUndefined();
   });
+
+  it("treats cookTime as an optional field", () => {
+    const raw = withFrontmatter(
+      `title: No Cook
+description: A no-bake recipe without a cook time.
+prepTime: 10
+servings: 2
+cuisine: Test
+tags:
+  - test
+ingredients:
+  - name: water`,
+    );
+
+    const recipe = parseRecipeMarkdown("no-cook.md", raw);
+    expect(recipe.cookTime).toBeUndefined();
+    expect(recipe.prepTime).toBe(10);
+  });
+
+  it("accepts an overriding cookTimeLabel and trims it", () => {
+    const raw = withFrontmatter(
+      `title: Ice Cream
+description: A frozen treat that is churned, not cooked.
+prepTime: 15
+cookTime: 30
+cookTimeLabel: "  Turbinage  "
+servings: 4
+cuisine: Test
+tags:
+  - dessert
+ingredients:
+  - name: cream`,
+    );
+
+    const recipe = parseRecipeMarkdown("ice-cream.md", raw);
+    expect(recipe.cookTime).toBe(30);
+    expect(recipe.cookTimeLabel).toBe("Turbinage");
+  });
+
+  it("treats cookTimeLabel as an optional field", () => {
+    const raw = withFrontmatter(
+      `title: Plain Cook
+description: A recipe with a cook time but no custom label.
+prepTime: 10
+cookTime: 20
+servings: 2
+cuisine: Test
+tags:
+  - test
+ingredients:
+  - name: water`,
+    );
+
+    const recipe = parseRecipeMarkdown("plain-cook.md", raw);
+    expect(recipe.cookTimeLabel).toBeUndefined();
+  });
 });
 
 describe("parseRecipeMarkdown - missing/invalid fields", () => {
@@ -358,6 +414,53 @@ ingredients:
       expect(contentError.issues.some((issue) => issue.field === "prepTime")).toBe(true);
       expect(contentError.issues.some((issue) => issue.field === "cookTime")).toBe(true);
       expect(contentError.issues.some((issue) => issue.field === "servings")).toBe(true);
+    }
+  });
+
+  it("rejects a cookTimeLabel that is present but blank", () => {
+    const raw = withFrontmatter(
+      `title: Blank Label
+description: A recipe with a blank cook-time label.
+prepTime: 10
+cookTime: 20
+cookTimeLabel: "   "
+servings: 2
+cuisine: Test
+tags:
+  - test
+ingredients:
+  - name: water`,
+    );
+
+    try {
+      parseRecipeMarkdown("blank-label.md", raw);
+      expect.unreachable("expected parseRecipeMarkdown to throw");
+    } catch (error) {
+      const contentError = error as RecipeContentError;
+      expect(contentError.issues.some((issue) => issue.field === "cookTimeLabel")).toBe(true);
+    }
+  });
+
+  it("rejects a cookTimeLabel provided without a cookTime", () => {
+    const raw = withFrontmatter(
+      `title: Label Without Cook
+description: A recipe with a cook-time label but no cook time.
+prepTime: 10
+cookTimeLabel: Levage
+servings: 2
+cuisine: Test
+tags:
+  - test
+ingredients:
+  - name: water`,
+    );
+
+    try {
+      parseRecipeMarkdown("label-without-cook.md", raw);
+      expect.unreachable("expected parseRecipeMarkdown to throw");
+    } catch (error) {
+      const contentError = error as RecipeContentError;
+      expect(contentError.issues.some((issue) => issue.field === "cookTimeLabel")).toBe(true);
     }
   });
 

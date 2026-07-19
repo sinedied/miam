@@ -52,8 +52,13 @@ export interface RecipeFrontmatter {
   image?: RecipeImage;
   /** Preparation time in minutes, positive integer. */
   prepTime: number;
-  /** Cooking time in minutes, positive integer. */
-  cookTime: number;
+  /** Optional cooking time in minutes, positive integer; validated only when present. */
+  cookTime?: number;
+  /**
+   * Optional label overriding the default "Cook" wording for the cook-time entry
+   * (e.g. "Levage", "Turbinage"). Non-empty when present; ignored when cookTime is absent.
+   */
+  cookTimeLabel?: string;
   /** Number of servings, positive integer. */
   servings: number;
   cuisine: string;
@@ -358,8 +363,19 @@ export function parseRecipeMarkdown(fileName: string, raw: string): Recipe {
     pushIssue("prepTime", "must be a positive integer (minutes)");
   }
 
-  if (!isPositiveInteger(data.cookTime)) {
-    pushIssue("cookTime", "must be a positive integer (minutes)");
+  if (data.cookTime !== undefined && !isPositiveInteger(data.cookTime)) {
+    pushIssue("cookTime", "must be a positive integer (minutes) when present");
+  }
+
+  if (data.cookTimeLabel !== undefined && !isNonEmptyString(data.cookTimeLabel)) {
+    pushIssue("cookTimeLabel", "must be a non-empty string when present");
+  }
+
+  if (data.cookTimeLabel !== undefined && data.cookTime === undefined) {
+    pushIssue(
+      "cookTimeLabel",
+      "is only meaningful alongside a cookTime; add cookTime or remove cookTimeLabel",
+    );
   }
 
   if (!isPositiveInteger(data.servings)) {
@@ -396,7 +412,9 @@ export function parseRecipeMarkdown(fileName: string, raw: string): Recipe {
     language: data.language as RecipeLanguage | undefined,
     image,
     prepTime: data.prepTime as number,
-    cookTime: data.cookTime as number,
+    cookTime: data.cookTime as number | undefined,
+    cookTimeLabel:
+      data.cookTimeLabel === undefined ? undefined : (data.cookTimeLabel as string).trim(),
     servings: data.servings as number,
     cuisine: (data.cuisine as string).trim(),
     tags,

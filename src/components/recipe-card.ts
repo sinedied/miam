@@ -164,7 +164,7 @@ export class RecipeCard extends LitElement {
 
   render() {
     const recipe = this.recipe;
-    const totalTime = recipe.prepTime + recipe.cookTime;
+    const totalTime = recipe.prepTime + (recipe.cookTime ?? 0);
 
     return html`
       <article lang=${ifDefined(recipe.language)}>

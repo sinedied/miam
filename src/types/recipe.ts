@@ -14,7 +14,8 @@ export interface Recipe {
   readonly image?: string;
   readonly imageAlt?: string;
   readonly prepTime: number;
-  readonly cookTime: number;
+  readonly cookTime?: number;
+  readonly cookTimeLabel?: string;
   readonly servings: number;
   readonly cuisine: string;
   readonly tags: readonly string[];

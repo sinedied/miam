@@ -206,7 +206,8 @@ recipes/
 | `image.path`  | string                    | no       | when the `image` object is present: repository-local path under `images/`, image extension (svg/png/jpg/jpeg/webp), no URLs, no absolute paths, no traversal |
 | `image.alt`   | string                    | if image | required (non-empty) **when an `image` is provided**, for accessibility |
 | `prepTime`    | number (minutes)          | yes      | positive integer                                                      |
-| `cookTime`    | number (minutes)          | yes      | positive integer                                                      |
+| `cookTime`    | number (minutes)          | no       | positive integer when present; when omitted, the detail hero shows only Prep (Cook and Total are hidden) |
+| `cookTimeLabel` | string                  | no       | non-empty when present; overrides the default "Cook"/"Cuisson" label of the cook-time entry (e.g. "Levage", "Turbinage"). Requires `cookTime` |
 | `servings`    | number                    | yes      | positive integer                                                      |
 | `cuisine`     | string                    | yes      | non-empty                                                             |
 | `tags`        | string[]                  | yes      | non-empty array of non-empty strings                                  |

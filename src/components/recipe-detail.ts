@@ -142,7 +142,8 @@ export class RecipeDetail extends LitElement {
 
       dl {
         display: grid;
-        grid-template-columns: repeat(3, minmax(0, 1fr));
+        grid-auto-flow: column;
+        grid-auto-columns: minmax(0, 1fr);
         margin: var(--space-3) 0 0;
         border-top: 1px solid var(--color-line);
         border-bottom: 1px solid var(--color-line);
@@ -337,11 +338,12 @@ export class RecipeDetail extends LitElement {
           padding: var(--space-5) var(--space-4);
         }
 
-        dl {
+        dl[data-cols="3"] {
+          grid-auto-flow: row;
           grid-template-columns: repeat(2, 1fr);
         }
 
-        dl > div:nth-child(-n + 2) {
+        dl[data-cols="3"] > div:nth-child(-n + 2) {
           border-bottom: 1px solid var(--color-line);
         }
 
@@ -395,19 +397,25 @@ export class RecipeDetail extends LitElement {
               </div>
               <h1>${recipe.title}</h1>
               <p class="description">${recipe.description}</p>
-              <dl>
+              <dl data-cols=${recipe.cookTime === undefined ? 1 : 3}>
                 <div>
                   <dt>${translate(this.locale, "prepTime")}</dt>
                   <dd>${recipe.prepTime} min</dd>
                 </div>
-                <div>
-                  <dt>${translate(this.locale, "cookTime")}</dt>
-                  <dd>${recipe.cookTime} min</dd>
-                </div>
-                <div>
-                  <dt>${translate(this.locale, "totalTime")}</dt>
-                  <dd>${recipe.prepTime + recipe.cookTime} min</dd>
-                </div>
+                ${
+                  recipe.cookTime === undefined
+                    ? null
+                    : html`
+                      <div>
+                        <dt>${recipe.cookTimeLabel ?? translate(this.locale, "cookTime")}</dt>
+                        <dd>${recipe.cookTime} min</dd>
+                      </div>
+                      <div>
+                        <dt>${translate(this.locale, "totalTime")}</dt>
+                        <dd>${recipe.prepTime + recipe.cookTime} min</dd>
+                      </div>
+                    `
+                }
               </dl>
             </div>
           </section>

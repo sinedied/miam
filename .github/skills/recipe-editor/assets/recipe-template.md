@@ -6,7 +6,8 @@ image: # optional — omit this whole block if there is no real image file
   path: images/<slug>.<svg|png|jpg|jpeg|webp>
   alt: <Non-empty description of the photo, in the content language>
 prepTime: 15 # minutes, positive integer
-cookTime: 25 # minutes, positive integer
+cookTime: 25 # optional; minutes, positive integer. Omit for no-cook recipes
+# cookTimeLabel: Levage # optional; overrides the "Cook" label (e.g. Levage, Turbinage). Only with cookTime
 servings: 4 # positive integer
 cuisine: <e.g. Italian / Française>
 tags:

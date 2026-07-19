@@ -27,6 +27,7 @@ export function toClientRecipe(recipe: ContentRecipe): ClientRecipe {
     imageAlt: recipe.image?.alt,
     prepTime: recipe.prepTime,
     cookTime: recipe.cookTime,
+    cookTimeLabel: recipe.cookTimeLabel,
     servings: recipe.servings,
     cuisine: recipe.cuisine,
     tags: recipe.tags,

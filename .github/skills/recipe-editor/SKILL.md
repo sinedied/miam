@@ -80,7 +80,8 @@ Frontmatter fields — required unless marked optional:
 | `title` | non-empty string |
 | `description` | non-empty string — the fun one-liner tagline |
 | `prepTime` | positive integer (minutes) |
-| `cookTime` | positive integer (minutes) |
+| `cookTime` | *optional*: positive integer (minutes). Omit for no-cook recipes (salads, no-bake, churned). When omitted, the detail hero shows only Prep |
+| `cookTimeLabel` | *optional*: non-empty string overriding the default "Cook" label (e.g. `Levage`, `Turbinage`). Only valid together with `cookTime` |
 | `servings` | positive integer |
 | `cuisine` | non-empty string |
 | `tags` | non-empty array of non-empty strings (a few, lowercase) |
@@ -104,8 +105,9 @@ value. **No raw HTML, no images in the body**, and links may only be
   placeholder. A missing image file that *is* referenced fails the build.
 - `quantity` must be a number (`200`), not a string (`"200g"`); put the unit in
   `unit`. Omit `quantity`/`unit` entirely when there isn't one.
-- `prepTime`/`cookTime`/`servings` are plain positive integers (minutes/count),
-  no units, no ranges.
+- `prepTime`/`servings` are plain positive integers (minutes/count), no units,
+  no ranges. `cookTime` is optional (same format); omit it for no-cook recipes,
+  and use `cookTimeLabel` to rename it (e.g. `Levage`, `Turbinage`) when set.
 - Times/servings, tags, and cuisine still stay in the source language when
   `language: fr`.
 - Quote any frontmatter string value that contains YAML-special characters —

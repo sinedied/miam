@@ -177,6 +177,17 @@ describe("recipe-card", () => {
     expect(card.shadowRoot?.querySelector(".placeholder")).not.toBeNull();
     expect(card.shadowRoot?.textContent).toContain("Tomato Tart");
   });
+
+  it("uses prep time as the total when the recipe has no cook time", async () => {
+    const card = document.createElement("recipe-card") as RecipeCard;
+    card.recipe = { ...recipeFixture, cookTime: undefined };
+    card.locale = "en";
+    document.body.append(card);
+    await card.updateComplete;
+
+    expect(card.shadowRoot?.textContent).toContain("20 min");
+    expect(card.shadowRoot?.textContent).not.toContain("55 min");
+  });
 });
 
 describe("recipe-detail", () => {
@@ -235,6 +246,34 @@ describe("recipe-detail", () => {
     detail.recipe = { ...recipeFixture, slug: "other", servings: 8 };
     await detail.updateComplete;
     expect(value()).toBe("8");
+  });
+
+  it("shows only prep time and hides cook/total when cookTime is absent", async () => {
+    const detail = document.createElement("recipe-detail") as RecipeDetail;
+    detail.recipe = { ...recipeFixture, cookTime: undefined };
+    detail.locale = "en";
+    document.body.append(detail);
+    await detail.updateComplete;
+
+    const dl = detail.shadowRoot?.querySelector("dl");
+    expect(dl?.getAttribute("data-cols")).toBe("1");
+    expect(dl?.querySelectorAll("div")).toHaveLength(1);
+    expect(detail.shadowRoot?.textContent).toContain("Prep");
+    expect(detail.shadowRoot?.textContent).not.toContain("Cook");
+    expect(detail.shadowRoot?.textContent).not.toContain("Total");
+  });
+
+  it("uses a custom cookTimeLabel when provided", async () => {
+    const detail = document.createElement("recipe-detail") as RecipeDetail;
+    detail.recipe = { ...recipeFixture, cookTime: 90, cookTimeLabel: "Levage" };
+    detail.locale = "en";
+    document.body.append(detail);
+    await detail.updateComplete;
+
+    const dl = detail.shadowRoot?.querySelector("dl");
+    expect(dl?.getAttribute("data-cols")).toBe("3");
+    expect(detail.shadowRoot?.textContent).toContain("Levage");
+    expect(detail.shadowRoot?.textContent).not.toContain("Cook");
   });
 });
 
