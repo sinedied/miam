@@ -274,6 +274,9 @@ describe("recipe-detail", () => {
     expect(dl?.getAttribute("data-cols")).toBe("3");
     expect(detail.shadowRoot?.textContent).toContain("Levage");
     expect(detail.shadowRoot?.textContent).not.toContain("Cook");
+    // 90 min cook renders as hours; total 20 + 90 = 110 -> "1h50".
+    expect(detail.shadowRoot?.textContent).toContain("1h30");
+    expect(detail.shadowRoot?.textContent).toContain("1h50");
   });
 });
 

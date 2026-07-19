@@ -3,6 +3,7 @@ import { customElement, property } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
 import { type Locale, translate } from "../lib/i18n";
 import { recipeHref } from "../lib/router";
+import { formatDuration } from "../lib/time";
 import { sharedStyles } from "../styles/component";
 import type { Recipe } from "../types/recipe";
 import { imagePlaceholder } from "./image-placeholder";
@@ -195,7 +196,7 @@ export class RecipeCard extends LitElement {
                     stroke-linecap="round"
                   />
                 </svg>
-                <span>${totalTime} min</span>
+                <span>${formatDuration(totalTime)}</span>
                 <span class="visually-hidden">${translate(this.locale, "totalTime")}</span>
               </li>
               <li class="chip">

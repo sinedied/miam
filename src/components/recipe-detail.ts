@@ -4,6 +4,7 @@ import { ifDefined } from "lit/directives/if-defined.js";
 import { unsafeHTML } from "lit/directives/unsafe-html.js";
 import { type Locale, translate } from "../lib/i18n";
 import { formatIngredient } from "../lib/ingredients";
+import { formatDuration } from "../lib/time";
 import { sharedStyles } from "../styles/component";
 import type { Recipe } from "../types/recipe";
 import { imagePlaceholder } from "./image-placeholder";
@@ -400,7 +401,7 @@ export class RecipeDetail extends LitElement {
               <dl data-cols=${recipe.cookTime === undefined ? 1 : 3}>
                 <div>
                   <dt>${translate(this.locale, "prepTime")}</dt>
-                  <dd>${recipe.prepTime} min</dd>
+                  <dd>${formatDuration(recipe.prepTime)}</dd>
                 </div>
                 ${
                   recipe.cookTime === undefined
@@ -408,11 +409,11 @@ export class RecipeDetail extends LitElement {
                     : html`
                       <div>
                         <dt>${recipe.cookTimeLabel ?? translate(this.locale, "cookTime")}</dt>
-                        <dd>${recipe.cookTime} min</dd>
+                        <dd>${formatDuration(recipe.cookTime)}</dd>
                       </div>
                       <div>
                         <dt>${translate(this.locale, "totalTime")}</dt>
-                        <dd>${recipe.prepTime + recipe.cookTime} min</dd>
+                        <dd>${formatDuration(recipe.prepTime + recipe.cookTime)}</dd>
                       </div>
                     `
                 }
