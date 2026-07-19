@@ -1,7 +1,10 @@
 ---
 title: Sorbet à la banane
-description: Un sorbet banane et yaourt grec tout en douceur et impossible à rater.
+description: Un sorbet banane léger et tout en douceur, impossible à rater.
 language: fr
+image:
+  path: images/sorbet-banane.jpg
+  alt: Deux boules de sorbet à la banane dans une coupe en verre
 prepTime: 5
 cookTime: 50
 servings: 8
@@ -13,11 +16,11 @@ tags:
   - glace
 ingredients:
   - name: grosses bananes
-    quantity: 6
+    quantity: 5
   - name: sirop de sucre de canne
     quantity: 15
     unit: cl
-  - name: yaourt grec
+  - name: yaourt nature grec
     quantity: 1
   - name: jus d'un demi-citron
 ---
