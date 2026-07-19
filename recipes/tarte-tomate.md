@@ -3,7 +3,7 @@ title: Tarte à la tomate
 description: Une tarte à la tomate ensoleillée, relevée de moutarde et d'herbes de Provence, qui sent bon l'été.
 language: fr
 image:
-  path: images/tarte-a-la-tomate.jpg
+  path: images/tarte-tomate.jpg
   alt: Une tarte à la tomate dorée garnie de rondelles de tomate et d'herbes
 prepTime: 10
 cookTime: 25

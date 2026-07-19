@@ -51,14 +51,13 @@ describe("recipe content client adapter", () => {
 
     const moduleSource = resolvedId ? loadRecipeModule(resolvedId) : undefined;
     expect(moduleSource).toContain("export const recipes =");
-    expect(moduleSource).toContain("pancake-stack");
-    expect(moduleSource).toContain('import img0 from "/recipes/images/');
-    expect(moduleSource).toContain("image: img0");
+    expect(moduleSource).toMatch(/import img\d+ from "\/recipes\/images\//);
+    expect(moduleSource).toMatch(/image: img\d+/);
   });
 
   it("recognizes recipe Markdown files independent of relative path syntax", () => {
-    expect(isRecipeContentFile(`${DEFAULT_RECIPES_DIR}/pancake-stack.md`)).toBe(true);
+    expect(isRecipeContentFile(`${DEFAULT_RECIPES_DIR}/tarte-tomate.md`)).toBe(true);
     expect(isRecipeContentFile(`${DEFAULT_RECIPES_DIR}/notes.txt`)).toBe(false);
-    expect(isRecipeContentFile("/another/content/recipes/pancake-stack.md")).toBe(false);
+    expect(isRecipeContentFile("/another/content/recipes/tarte-tomate.md")).toBe(false);
   });
 });

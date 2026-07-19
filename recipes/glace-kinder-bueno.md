@@ -3,7 +3,7 @@ title: Glace au Kinder Bueno
 description: Une glace crémeuse au bon goût de Kinder Bueno qui disparaît plus vite qu'elle ne se prépare.
 language: fr
 image:
-  path: images/glace-au-kinder-bueno.jpg
+  path: images/glace-kinder-bueno.jpg
   alt: Une boule de glace au Kinder Bueno décorée de carrés de Kinder Bueno
 prepTime: 10
 cookTime: 40

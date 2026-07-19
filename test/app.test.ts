@@ -36,7 +36,7 @@ describe("miam-app", () => {
       return;
     }
 
-    input.value = "quiche";
+    input.value = "kinder";
     input.dispatchEvent(new InputEvent("input"));
     await app.updateComplete;
     expect(app.shadowRoot?.querySelectorAll("recipe-card")).toHaveLength(1);
@@ -50,12 +50,13 @@ describe("miam-app", () => {
 
   it("renders recipe details and manages focus after hash navigation", async () => {
     const app = await renderApp();
-    setHash("#/recipes/pancake-stack");
+    const target = recipes[0];
+    setHash(`#/recipes/${target.slug}`);
     await app.updateComplete;
     await Promise.resolve();
 
     expect(app.shadowRoot?.querySelector("recipe-detail")).not.toBeNull();
-    expect(document.title).toContain("Fluffy Pancake Stack");
+    expect(document.title).toContain(target.title);
     expect(app.shadowRoot?.activeElement).toBe(app.shadowRoot?.querySelector("main"));
   });
 

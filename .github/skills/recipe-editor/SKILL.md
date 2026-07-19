@@ -52,8 +52,19 @@ tagline.
      place it under `recipes/images/`.
    - If none is available, **omit the whole `image` block**. Never invent an SVG
      or placeholder image.
-7. **Pick the slug.** Kebab-case from the title (`^[a-z0-9]+(?:-[a-z0-9]+)*$`),
-   unique across `recipes/`. The filename (minus `.md`) *is* the slug.
+7. **Pick the slug.** Kebab-case from the title
+   (`^[a-z0-9]+(?:-[a-z0-9]+)*$`), lowercase, accents stripped, unique across
+   `recipes/`. **Drop short linking words** — articles, prepositions,
+   conjunctions and elided forms (FR: à, la, le, les, un, une, au, aux, du, de,
+   des, d', l', et; EN: a, an, the, of, with, and, to) — keeping only the
+   meaningful content words. Examples: "Tarte à la tomate" → `tarte-tomate`;
+   "Sorbet à la banane" → `sorbet-banane`; "Glace au Kinder Bueno" →
+   `glace-kinder-bueno`. **Two exceptions:** keep a linking word when it is part
+   of a canonical dish name (e.g. "Coq au vin" → `coq-au-vin`, "Pot-au-feu" →
+   `pot-au-feu`), and keep a distinguishing word when dropping it would collide
+   with an existing recipe (e.g. `tarte-pommes` vs `tarte-de-pommes`) rather than
+   forcing the shortest form. The filename (minus `.md`) *is* the slug, and the
+   image file uses the same slug (`images/<slug>.<ext>`).
 8. **Write the file** using [assets/recipe-template.md](assets/recipe-template.md)
    as the skeleton: `recipes/<slug>.md`.
 9. **Validate.** Run `npm run build`. On failure it prints a `RecipeContentError`
