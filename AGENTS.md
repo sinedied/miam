@@ -45,6 +45,32 @@ Guidance for coding agents working on **miam**, a read-only MVP family recipe ca
 - Maintain sufficient color contrast and visible focus states.
 - Layout must be **responsive**: usable on mobile, tablet, and desktop viewports.
 
+## Design system
+
+All design tokens are **CSS custom properties** defined in `src/styles/global.css`. Use the
+tokens everywhere — do not hard-code colors, font sizes, spacing, or radii in components.
+
+- **Colors** are semantic roles, not raw values: `--color-canvas`, `--color-surface`,
+  `--color-surface-strong`, `--color-ink`, `--color-ink-muted`, `--color-line`,
+  `--color-accent`, `--color-accent-strong`, `--color-accent-soft`, `--color-leaf` (brand),
+  `--color-focus`, plus `--shadow-card`.
+- **Type scale**: `--text-2xs`, `--text-xs`, `--text-sm`, `--text-base`, `--text-md`,
+  `--text-lg`, `--text-xl`, `--text-2xl`. **Fonts**: `--font-display`, `--font-body`,
+  `--font-label`.
+- **Spacing**: `--space-1`…`--space-8`. **Radii**: `--radius-sm/md/lg`. **Layout**:
+  `--content-width`, `--header-height`.
+- **Theming has two axes**, both persisted to `localStorage` and applied on load:
+  - **Appearance** (`miam:appearance`): `system` | `light` | `dark` (a radio group in
+    settings). `system` follows the OS via `matchMedia`.
+  - **Palette** (`miam:palette`): `moka` (default) | `ocean` | `slate` (a dropdown).
+  - JS resolves appearance→mode and sets `data-theme="<palette>"` + `data-mode="light|dark"`
+    on `<html>`; the CSS token blocks key off those attributes. See `src/lib/theme.ts`.
+- **To add a palette**: add its id to `palettes` in `src/lib/theme.ts`, add a
+  `themeColors[<id>]` canvas entry, add `:root[data-theme="<id>"]` (light) and
+  `:root[data-theme="<id>"][data-mode="dark"]` (dark) token blocks in `global.css`, and a
+  `theme<Name>` label in `src/lib/i18n.ts` (both locales). Every palette must define all
+  color roles in both modes.
+
 ## Testing
 
 - **Test every component and function**, including edge cases (empty/missing data, malformed recipe input, empty search results, locale fallback, etc.).

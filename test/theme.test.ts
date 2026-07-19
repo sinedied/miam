@@ -1,12 +1,27 @@
 import { describe, expect, it, vi } from "vitest";
-import { applyTheme, loadTheme, resolveTheme, saveTheme } from "../src/lib/theme";
+import {
+  applyTheme,
+  loadAppearance,
+  loadPalette,
+  resolveMode,
+  saveAppearance,
+  savePalette,
+} from "../src/lib/theme";
 
-describe("theme", () => {
-  it("loads a valid saved preference and falls back to system", () => {
-    expect(loadTheme({ getItem: () => "dark" })).toBe("dark");
-    expect(loadTheme({ getItem: () => "light" })).toBe("light");
-    expect(loadTheme({ getItem: () => "not-a-theme" })).toBe("system");
-    expect(loadTheme({ getItem: () => null })).toBe("system");
+describe("theme — appearance", () => {
+  it("loads a valid saved appearance and falls back to system", () => {
+    expect(loadAppearance({ getItem: (key) => (key === "miam:appearance" ? "dark" : null) })).toBe(
+      "dark",
+    );
+    expect(loadAppearance({ getItem: () => "not-an-appearance" })).toBe("system");
+    expect(loadAppearance({ getItem: () => null })).toBe("system");
+  });
+
+  it("migrates a legacy miam:theme appearance value", () => {
+    const storage = {
+      getItem: (key: string) => (key === "miam:theme" ? "dark" : null),
+    };
+    expect(loadAppearance(storage)).toBe("dark");
   });
 
   it("continues when storage access is denied", () => {
@@ -16,42 +31,59 @@ describe("theme", () => {
         throw new DOMException("Denied");
       },
     };
-    expect(loadTheme(denied)).toBe("system");
+    expect(loadAppearance(denied)).toBe("system");
     expect(warning).toHaveBeenCalledOnce();
   });
 
-  it("persists the preference and reports failures", () => {
+  it("persists the appearance and reports failures", () => {
     const setItem = vi.fn();
-    saveTheme("dark", { setItem });
-    expect(setItem).toHaveBeenCalledWith("miam:theme", "dark");
+    saveAppearance("dark", { setItem });
+    expect(setItem).toHaveBeenCalledWith("miam:appearance", "dark");
 
     const warning = vi.spyOn(console, "warn").mockImplementation(() => undefined);
-    saveTheme("light", {
+    saveAppearance("light", {
       setItem: () => {
         throw new DOMException("Denied");
       },
     });
     expect(warning).toHaveBeenCalledOnce();
   });
+});
 
-  it("applies forced themes and removes the override for system", () => {
+describe("theme — palette", () => {
+  it("loads a valid saved palette and falls back to moka", () => {
+    expect(loadPalette({ getItem: () => "ocean" })).toBe("ocean");
+    expect(loadPalette({ getItem: () => "slate" })).toBe("slate");
+    expect(loadPalette({ getItem: () => "not-a-palette" })).toBe("moka");
+    expect(loadPalette({ getItem: () => null })).toBe("moka");
+  });
+
+  it("persists the palette", () => {
+    const setItem = vi.fn();
+    savePalette("ocean", { setItem });
+    expect(setItem).toHaveBeenCalledWith("miam:palette", "ocean");
+  });
+});
+
+describe("theme — apply & resolve", () => {
+  it("applies the palette and mode to the root dataset", () => {
     const root = document.createElement("html");
-    applyTheme("dark", root);
-    expect(root.dataset.theme).toBe("dark");
-    applyTheme("light", root);
-    expect(root.dataset.theme).toBe("light");
-    applyTheme("system", root);
-    expect(root.dataset.theme).toBeUndefined();
+    applyTheme("ocean", "dark", root);
+    expect(root.dataset.theme).toBe("ocean");
+    expect(root.dataset.mode).toBe("dark");
+    applyTheme("moka", "light", root);
+    expect(root.dataset.theme).toBe("moka");
+    expect(root.dataset.mode).toBe("light");
   });
 
   it("is a no-op when there is no root element", () => {
-    expect(() => applyTheme("dark", undefined)).not.toThrow();
+    expect(() => applyTheme("moka", "dark", undefined)).not.toThrow();
   });
 
   it("resolves system to the OS preference and forces otherwise", () => {
-    expect(resolveTheme("system", true)).toBe("dark");
-    expect(resolveTheme("system", false)).toBe("light");
-    expect(resolveTheme("light", true)).toBe("light");
-    expect(resolveTheme("dark", false)).toBe("dark");
+    expect(resolveMode("system", true)).toBe("dark");
+    expect(resolveMode("system", false)).toBe("light");
+    expect(resolveMode("light", true)).toBe("light");
+    expect(resolveMode("dark", false)).toBe("dark");
   });
 });

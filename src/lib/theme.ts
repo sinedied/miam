@@ -1,66 +1,109 @@
-export const themePreferences = ["system", "light", "dark"] as const;
-export type ThemePreference = (typeof themePreferences)[number];
+export const appearances = ["system", "light", "dark"] as const;
+export type Appearance = (typeof appearances)[number];
 
-const STORAGE_KEY = "miam:theme";
+export const palettes = ["moka", "ocean", "slate"] as const;
+export type Palette = (typeof palettes)[number];
 
-function isThemePreference(value: unknown): value is ThemePreference {
-  return typeof value === "string" && themePreferences.includes(value as ThemePreference);
+export type Mode = "light" | "dark";
+
+const APPEARANCE_KEY = "miam:appearance";
+const PALETTE_KEY = "miam:palette";
+/** Legacy key that once stored the appearance (system/light/dark); read for migration. */
+const LEGACY_KEY = "miam:theme";
+
+function isAppearance(value: unknown): value is Appearance {
+  return typeof value === "string" && appearances.includes(value as Appearance);
 }
 
-export function loadTheme(
+function isPalette(value: unknown): value is Palette {
+  return typeof value === "string" && palettes.includes(value as Palette);
+}
+
+export function loadAppearance(
   storage: Pick<Storage, "getItem"> | undefined = globalThis.localStorage,
-): ThemePreference {
+): Appearance {
   try {
-    const saved = storage?.getItem(STORAGE_KEY);
-    if (isThemePreference(saved)) {
+    const saved = storage?.getItem(APPEARANCE_KEY);
+    if (isAppearance(saved)) {
+      return saved;
+    }
+    // Migration: the legacy `miam:theme` key used to store the appearance.
+    const legacy = storage?.getItem(LEGACY_KEY);
+    if (isAppearance(legacy)) {
+      return legacy;
+    }
+  } catch (error) {
+    console.warn("Miam could not read the saved appearance preference.", error);
+  }
+  return "system";
+}
+
+export function saveAppearance(
+  appearance: Appearance,
+  storage: Pick<Storage, "setItem"> | undefined = globalThis.localStorage,
+): void {
+  try {
+    storage?.setItem(APPEARANCE_KEY, appearance);
+  } catch (error) {
+    console.warn("Miam could not persist the appearance preference.", error);
+  }
+}
+
+export function loadPalette(
+  storage: Pick<Storage, "getItem"> | undefined = globalThis.localStorage,
+): Palette {
+  try {
+    const saved = storage?.getItem(PALETTE_KEY);
+    if (isPalette(saved)) {
       return saved;
     }
   } catch (error) {
     console.warn("Miam could not read the saved theme preference.", error);
   }
-  return "system";
+  return "moka";
 }
 
-export function saveTheme(
-  theme: ThemePreference,
+export function savePalette(
+  palette: Palette,
   storage: Pick<Storage, "setItem"> | undefined = globalThis.localStorage,
 ): void {
   try {
-    storage?.setItem(STORAGE_KEY, theme);
+    storage?.setItem(PALETTE_KEY, palette);
   } catch (error) {
     console.warn("Miam could not persist the theme preference.", error);
   }
 }
 
+/** Resolves an appearance preference to the concrete light/dark mode in effect. */
+export function resolveMode(
+  appearance: Appearance,
+  prefersDark: boolean = globalThis.matchMedia?.("(prefers-color-scheme: dark)")?.matches ?? false,
+): Mode {
+  if (appearance === "system") {
+    return prefersDark ? "dark" : "light";
+  }
+  return appearance;
+}
+
 /**
- * Applies the theme preference to the document root. `system` removes the
- * override so the CSS `prefers-color-scheme` rules take effect; `light`/`dark`
- * force the theme via `data-theme`.
+ * Applies the palette and resolved mode to the document root via `data-theme`
+ * (palette) and `data-mode` (light/dark), which the CSS custom properties key off.
  */
 export function applyTheme(
-  theme: ThemePreference,
+  palette: Palette,
+  mode: Mode,
   root: HTMLElement | undefined = globalThis.document?.documentElement,
 ): void {
   if (!root) {
     return;
   }
-  if (theme === "system") {
-    delete root.dataset.theme;
-  } else {
-    root.dataset.theme = theme;
-  }
+  root.dataset.theme = palette;
+  root.dataset.mode = mode;
 }
 
-/** Theme-color values matching the light/dark canvas backgrounds in global.css. */
-export const themeColors = { light: "#f6f3ee", dark: "#17130f" } as const;
-
-/** Resolves a preference to the concrete `light`/`dark` theme actually in effect. */
-export function resolveTheme(
-  theme: ThemePreference,
-  prefersDark: boolean = globalThis.matchMedia?.("(prefers-color-scheme: dark)")?.matches ?? false,
-): "light" | "dark" {
-  if (theme === "system") {
-    return prefersDark ? "dark" : "light";
-  }
-  return theme;
-}
+/** Meta theme-color (canvas) for each palette and mode, matching global.css. */
+export const themeColors: Record<Palette, Record<Mode, string>> = {
+  moka: { light: "#f6f3ee", dark: "#17130f" },
+  ocean: { light: "#eef4f6", dark: "#0c1416" },
+  slate: { light: "#f1f3f6", dark: "#0f1219" },
+};

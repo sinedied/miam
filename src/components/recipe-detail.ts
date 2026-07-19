@@ -127,7 +127,7 @@ export class RecipeDetail extends LitElement {
         max-width: 14ch;
         margin: 0;
         font-family: var(--font-display);
-        font-size: clamp(1.75rem, 4vw, 2.6rem);
+        font-size: var(--text-2xl);
         font-weight: 700;
         letter-spacing: -0.04em;
         line-height: 0.98;
@@ -137,7 +137,7 @@ export class RecipeDetail extends LitElement {
         max-width: 38rem;
         margin: 0;
         color: var(--color-ink-muted);
-        font-size: 0.95rem;
+        font-size: var(--text-base);
         line-height: 1.55;
       }
 
@@ -192,7 +192,7 @@ export class RecipeDetail extends LitElement {
       h2 {
         margin: 0 0 var(--space-3);
         font-family: var(--font-display);
-        font-size: clamp(1.4rem, 3vw, 1.9rem);
+        font-size: var(--text-xl);
         letter-spacing: -0.03em;
       }
 
@@ -339,17 +339,18 @@ export class RecipeDetail extends LitElement {
           padding: var(--space-5) var(--space-4);
         }
 
-        dl[data-cols="3"] {
-          grid-auto-flow: row;
-          grid-template-columns: repeat(2, 1fr);
+        /* Keep prep / cook / total on a single row even on the narrowest screens. */
+        dl > div {
+          padding-right: var(--space-2);
         }
 
-        dl[data-cols="3"] > div:nth-child(-n + 2) {
-          border-bottom: 1px solid var(--color-line);
+        dt {
+          font-size: 0.6rem;
+          letter-spacing: 0.06em;
         }
 
-        .ingredients {
-          padding: var(--space-4);
+        dd {
+          font-size: var(--text-sm);
         }
       }
     `,

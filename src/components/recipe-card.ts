@@ -38,7 +38,8 @@ export class RecipeCard extends LitElement {
       }
 
       a {
-        display: grid;
+        display: flex;
+        flex-direction: column;
         height: 100%;
         color: inherit;
         text-decoration: none;
@@ -81,17 +82,23 @@ export class RecipeCard extends LitElement {
       }
 
       .body {
-        display: grid;
-        align-content: start;
-        gap: 0.4rem;
+        display: flex;
+        flex: 1;
+        flex-direction: column;
+        gap: var(--space-3);
         padding: var(--space-3);
+      }
+
+      .body-top {
+        display: grid;
+        gap: 0.4rem;
       }
 
       .tags {
         display: flex;
         flex-wrap: wrap;
         gap: 0.3rem;
-        font-size: 0.62rem;
+        font-size: var(--text-2xs);
       }
 
       .tag {
@@ -105,7 +112,7 @@ export class RecipeCard extends LitElement {
       h2 {
         margin: 0;
         font-family: var(--font-display);
-        font-size: clamp(1rem, 1.6vw, 1.15rem);
+        font-size: var(--text-md);
         letter-spacing: -0.02em;
         line-height: 1.15;
       }
@@ -115,36 +122,32 @@ export class RecipeCard extends LitElement {
         margin: 0;
         overflow: hidden;
         color: var(--color-ink-muted);
-        font-size: 0.8rem;
-        line-height: 1.45;
+        font-size: var(--text-sm);
+        line-height: 1.5;
         -webkit-box-orient: vertical;
-        -webkit-line-clamp: 2;
+        -webkit-line-clamp: 3;
       }
 
-      .meta {
+      .card-footer {
         display: flex;
-        flex-wrap: wrap;
-        gap: 0.4rem;
-        margin: 0.1rem 0 0;
-        padding: 0;
-        list-style: none;
+        gap: var(--space-4);
+        margin-top: auto;
+        padding-top: var(--space-3);
+        border-top: 1px solid var(--color-line);
+        color: var(--color-ink-muted);
+        font-size: var(--text-xs);
       }
 
-      .chip {
+      .meta-item {
         display: inline-flex;
         align-items: center;
-        gap: 0.25rem;
-        padding: 0.12rem 0.45rem;
-        border: 1px solid var(--color-line);
-        border-radius: 999px;
-        color: var(--color-ink-muted);
-        font-size: 0.72rem;
+        gap: 0.3rem;
         font-variant-numeric: tabular-nums;
       }
 
-      .chip svg {
-        width: 0.8rem;
-        height: 0.8rem;
+      .meta-item svg {
+        width: 0.9rem;
+        height: 0.9rem;
         color: var(--color-leaf);
       }
 
@@ -169,9 +172,13 @@ export class RecipeCard extends LitElement {
 
     return html`
       <article lang=${ifDefined(recipe.language)}>
-        <a href=${recipeHref(recipe.slug)} aria-label=${translate(this.locale, "openRecipe", {
-          title: recipe.title,
-        })}>
+        <a href=${recipeHref(recipe.slug)} title=${recipe.description} aria-label=${translate(
+          this.locale,
+          "openRecipe",
+          {
+            title: recipe.title,
+          },
+        )}>
           <div class="image-wrap">
             ${
               recipe.image
@@ -180,13 +187,15 @@ export class RecipeCard extends LitElement {
             }
           </div>
           <div class="body">
-            <p class="eyebrow tags">
-              ${recipe.tags.slice(0, 3).map((tag) => html`<span class="tag">${tag}</span>`)}
-            </p>
-            <h2>${recipe.title}</h2>
-            <p class="description">${recipe.description}</p>
-            <ul class="meta">
-              <li class="chip">
+            <div class="body-top">
+              <p class="eyebrow tags">
+                ${recipe.tags.slice(0, 3).map((tag) => html`<span class="tag">${tag}</span>`)}
+              </p>
+              <h2>${recipe.title}</h2>
+              <p class="description">${recipe.description}</p>
+            </div>
+            <div class="card-footer">
+              <span class="meta-item">
                 <svg viewBox="0 0 24 24" aria-hidden="true" fill="none">
                   <circle cx="12" cy="13" r="8" stroke="currentColor" stroke-width="2" />
                   <path
@@ -198,8 +207,8 @@ export class RecipeCard extends LitElement {
                 </svg>
                 <span>${formatDuration(totalTime)}</span>
                 <span class="visually-hidden">${translate(this.locale, "totalTime")}</span>
-              </li>
-              <li class="chip">
+              </span>
+              <span class="meta-item">
                 <svg viewBox="0 0 24 24" aria-hidden="true" fill="none">
                   <circle cx="9" cy="8" r="3" stroke="currentColor" stroke-width="2" />
                   <path
@@ -211,8 +220,8 @@ export class RecipeCard extends LitElement {
                 </svg>
                 <span>${recipe.servings}</span>
                 <span class="visually-hidden">${translate(this.locale, "servings")}</span>
-              </li>
-            </ul>
+              </span>
+            </div>
           </div>
         </a>
       </article>

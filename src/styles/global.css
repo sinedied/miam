@@ -3,7 +3,39 @@
   font-synthesis: none;
   text-rendering: optimizeLegibility;
 
-  /* Warm minimal — light theme (default). */
+  /* Fonts. */
+  --font-display: "Iowan Old Style", "Palatino Linotype", Palatino, Georgia, serif;
+  --font-body: "Avenir Next", Avenir, "Century Gothic", Futura, sans-serif;
+  --font-label: "Arial Narrow", "Avenir Next Condensed", "Franklin Gothic Condensed", sans-serif;
+
+  /* Type scale (see AGENTS.md "Design system"). */
+  --text-2xs: 0.7rem;
+  --text-xs: 0.8rem;
+  --text-sm: 0.9rem;
+  --text-base: 1rem;
+  --text-md: 1.15rem;
+  --text-lg: 1.3rem;
+  --text-xl: clamp(1.4rem, 3vw, 1.9rem);
+  --text-2xl: clamp(1.75rem, 4vw, 2.6rem);
+
+  /* Spacing scale. */
+  --space-1: 0.25rem;
+  --space-2: 0.5rem;
+  --space-3: 0.75rem;
+  --space-4: 1rem;
+  --space-5: 1.5rem;
+  --space-6: 2rem;
+  --space-7: 3rem;
+  --space-8: 4.5rem;
+
+  /* Radii & layout. */
+  --radius-sm: 0.25rem;
+  --radius-md: 0.65rem;
+  --radius-lg: 1rem;
+  --content-width: 78rem;
+  --header-height: 3.25rem;
+
+  /* Moka palette — light (default). */
   color-scheme: light;
   --color-canvas: #f6f3ee;
   --color-surface: #fffdfa;
@@ -17,29 +49,30 @@
   --color-leaf: #3f6b4f;
   --color-focus: #2f6ede;
   --shadow-card: 0 1px 2px rgb(35 32 28 / 6%), 0 12px 28px rgb(35 32 28 / 6%);
-
-  --font-display: "Iowan Old Style", "Palatino Linotype", Palatino, Georgia, serif;
-  --font-body: "Avenir Next", Avenir, "Century Gothic", Futura, sans-serif;
-  --font-label: "Arial Narrow", "Avenir Next Condensed", "Franklin Gothic Condensed", sans-serif;
-
-  --space-1: 0.25rem;
-  --space-2: 0.5rem;
-  --space-3: 0.75rem;
-  --space-4: 1rem;
-  --space-5: 1.5rem;
-  --space-6: 2rem;
-  --space-7: 3rem;
-  --space-8: 4.5rem;
-
-  --radius-sm: 0.25rem;
-  --radius-md: 0.65rem;
-  --radius-lg: 1rem;
-  --content-width: 78rem;
-  --header-height: 3.25rem;
 }
 
-/* Warm minimal — dark theme tokens (shared by forced dark and system dark). */
-:root[data-theme="dark"] {
+/* Moka — dark. The media block is the pre-JS fallback for a dark OS preference on the
+   default palette (avoids a light flash); JS then sets data-mode explicitly. */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-mode]) {
+    color-scheme: dark;
+    --color-canvas: #17130f;
+    --color-surface: #201b16;
+    --color-surface-strong: #2b241d;
+    --color-ink: #f3ece2;
+    --color-ink-muted: #a99f92;
+    --color-line: #372f27;
+    --color-accent: #e0764f;
+    --color-accent-strong: #ef8f6c;
+    --color-accent-soft: #33231b;
+    --color-leaf: #7fb08a;
+    --color-focus: #8bb4ff;
+    --shadow-card: 0 1px 2px rgb(0 0 0 / 40%), 0 14px 30px rgb(0 0 0 / 35%);
+  }
+}
+
+:root[data-theme="moka"][data-mode="dark"],
+:root[data-mode="dark"]:not([data-theme]) {
   color-scheme: dark;
   --color-canvas: #17130f;
   --color-surface: #201b16;
@@ -55,23 +88,72 @@
   --shadow-card: 0 1px 2px rgb(0 0 0 / 40%), 0 14px 30px rgb(0 0 0 / 35%);
 }
 
-/* System default: follow the OS unless a theme is explicitly chosen. */
-@media (prefers-color-scheme: dark) {
-  :root:not([data-theme="light"]) {
-    color-scheme: dark;
-    --color-canvas: #17130f;
-    --color-surface: #201b16;
-    --color-surface-strong: #2b241d;
-    --color-ink: #f3ece2;
-    --color-ink-muted: #a99f92;
-    --color-line: #372f27;
-    --color-accent: #e0764f;
-    --color-accent-strong: #ef8f6c;
-    --color-accent-soft: #33231b;
-    --color-leaf: #7fb08a;
-    --color-focus: #8bb4ff;
-    --shadow-card: 0 1px 2px rgb(0 0 0 / 40%), 0 14px 30px rgb(0 0 0 / 35%);
-  }
+/* Ocean palette — light. */
+:root[data-theme="ocean"] {
+  color-scheme: light;
+  --color-canvas: #eef4f6;
+  --color-surface: #ffffff;
+  --color-surface-strong: #dbe9ed;
+  --color-ink: #142a30;
+  --color-ink-muted: #4f6b72;
+  --color-line: #c9dde2;
+  --color-accent: #0e7c86;
+  --color-accent-strong: #0a5f67;
+  --color-accent-soft: #d8ecef;
+  --color-leaf: #256d78;
+  --color-focus: #2f6ede;
+  --shadow-card: 0 1px 2px rgb(16 40 45 / 8%), 0 12px 28px rgb(16 40 45 / 8%);
+}
+
+/* Ocean palette — dark. */
+:root[data-theme="ocean"][data-mode="dark"] {
+  color-scheme: dark;
+  --color-canvas: #0c1416;
+  --color-surface: #121e21;
+  --color-surface-strong: #1c2c30;
+  --color-ink: #e6f1f3;
+  --color-ink-muted: #93b0b6;
+  --color-line: #26383d;
+  --color-accent: #35b3bf;
+  --color-accent-strong: #5ecad4;
+  --color-accent-soft: #10262a;
+  --color-leaf: #4fb3ad;
+  --color-focus: #8bb4ff;
+  --shadow-card: 0 1px 2px rgb(0 0 0 / 45%), 0 14px 30px rgb(0 0 0 / 40%);
+}
+
+/* Slate palette — light. */
+:root[data-theme="slate"] {
+  color-scheme: light;
+  --color-canvas: #f1f3f6;
+  --color-surface: #ffffff;
+  --color-surface-strong: #e1e6ec;
+  --color-ink: #1c2230;
+  --color-ink-muted: #5a6478;
+  --color-line: #d3d9e2;
+  --color-accent: #3b62c4;
+  --color-accent-strong: #2f4fa0;
+  --color-accent-soft: #e2e8f7;
+  --color-leaf: #45589a;
+  --color-focus: #2f6ede;
+  --shadow-card: 0 1px 2px rgb(28 34 48 / 8%), 0 12px 28px rgb(28 34 48 / 8%);
+}
+
+/* Slate palette — dark. */
+:root[data-theme="slate"][data-mode="dark"] {
+  color-scheme: dark;
+  --color-canvas: #0f1219;
+  --color-surface: #171b24;
+  --color-surface-strong: #222736;
+  --color-ink: #e7eaf2;
+  --color-ink-muted: #9aa3b8;
+  --color-line: #2b3040;
+  --color-accent: #6a8bff;
+  --color-accent-strong: #8aa4ff;
+  --color-accent-soft: #182034;
+  --color-leaf: #7e93e0;
+  --color-focus: #8bb4ff;
+  --shadow-card: 0 1px 2px rgb(0 0 0 / 45%), 0 14px 30px rgb(0 0 0 / 40%);
 }
 
 * {

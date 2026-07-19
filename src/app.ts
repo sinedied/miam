@@ -9,11 +9,14 @@ import { type Locale, loadLocale, saveLocale, translate } from "./lib/i18n";
 import { catalogHref, parseRoute, parseSearchQuery, type Route } from "./lib/router";
 import { searchRecipes } from "./lib/search";
 import {
+  type Appearance,
   applyTheme,
-  loadTheme,
-  resolveTheme,
-  saveTheme,
-  type ThemePreference,
+  loadAppearance,
+  loadPalette,
+  type Palette,
+  resolveMode,
+  saveAppearance,
+  savePalette,
   themeColors,
 } from "./lib/theme";
 import { sharedStyles } from "./styles/component";
@@ -145,7 +148,18 @@ export class MiamApp extends LitElement {
   private locale: Locale = loadLocale();
 
   @state()
-  private theme: ThemePreference = loadTheme();
+  private appearance: Appearance = loadAppearance();
+
+  @state()
+  private palette: Palette = loadPalette();
+
+  private readonly darkModeQuery = globalThis.matchMedia?.("(prefers-color-scheme: dark)");
+
+  private readonly onSystemModeChange = (): void => {
+    if (this.appearance === "system") {
+      this.applyThemePreference();
+    }
+  };
 
   @state()
   private route: Route = parseRoute(globalThis.location?.hash ?? "");
@@ -168,6 +182,7 @@ export class MiamApp extends LitElement {
   connectedCallback(): void {
     super.connectedCallback();
     globalThis.addEventListener("hashchange", this.onHashChange);
+    this.darkModeQuery?.addEventListener("change", this.onSystemModeChange);
     this.applyLocale();
     this.applyThemePreference();
     this.updateDocumentTitle();
@@ -175,6 +190,7 @@ export class MiamApp extends LitElement {
 
   disconnectedCallback(): void {
     globalThis.removeEventListener("hashchange", this.onHashChange);
+    this.darkModeQuery?.removeEventListener("change", this.onSystemModeChange);
     super.disconnectedCallback();
   }
 
@@ -197,16 +213,23 @@ export class MiamApp extends LitElement {
     this.applyLocale();
   }
 
-  private changeTheme(event: CustomEvent<ThemePreference>): void {
-    this.theme = event.detail;
-    saveTheme(this.theme);
+  private changeAppearance(event: CustomEvent<Appearance>): void {
+    this.appearance = event.detail;
+    saveAppearance(this.appearance);
+    this.applyThemePreference();
+  }
+
+  private changePalette(event: CustomEvent<Palette>): void {
+    this.palette = event.detail;
+    savePalette(this.palette);
     this.applyThemePreference();
   }
 
   private applyThemePreference(): void {
-    applyTheme(this.theme);
+    const mode = resolveMode(this.appearance);
+    applyTheme(this.palette, mode);
     const meta = document.querySelector('meta[name="theme-color"]');
-    meta?.setAttribute("content", themeColors[resolveTheme(this.theme)]);
+    meta?.setAttribute("content", themeColors[this.palette][mode]);
   }
 
   private changeQuery(event: CustomEvent<string>): void {
@@ -303,11 +326,13 @@ export class MiamApp extends LitElement {
       </a>
       <app-header
         .locale=${this.locale}
-        .theme=${this.theme}
+        .appearance=${this.appearance}
+        .palette=${this.palette}
         .query=${this.query}
         .showSearch=${this.route.name === "catalog"}
         @locale-change=${this.changeLocale}
-        @theme-change=${this.changeTheme}
+        @appearance-change=${this.changeAppearance}
+        @palette-change=${this.changePalette}
         @search-change=${this.changeQuery}
         @clear-search=${this.clearQuery}
       ></app-header>

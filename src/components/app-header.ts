@@ -2,7 +2,7 @@ import { css, html, LitElement } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
 import { type Locale, supportedLocales, translate } from "../lib/i18n";
-import { type ThemePreference, themePreferences } from "../lib/theme";
+import { type Appearance, appearances, type Palette, palettes } from "../lib/theme";
 import { sharedStyles } from "../styles/component";
 
 @customElement("app-header")
@@ -153,54 +153,82 @@ export class AppHeader extends LitElement {
         right: 0;
         z-index: 30;
         display: grid;
-        gap: 0.15rem;
-        min-width: 12rem;
-        padding: var(--space-2);
+        gap: var(--space-3);
+        min-width: 13rem;
+        padding: var(--space-3);
         border: 1px solid var(--color-line);
         border-radius: var(--radius-md);
         background: var(--color-surface);
         box-shadow: var(--shadow-card);
+        font-size: var(--text-sm);
       }
 
-      .menu-group {
-        margin: 0.1rem 0.5rem 0.25rem;
-      }
-
-      .menu-group--divided {
-        margin-top: var(--space-2);
-        padding-top: var(--space-2);
-        border-top: 1px solid var(--color-line);
-      }
-
-      .menu-item {
-        display: flex;
-        align-items: center;
-        gap: 0.4rem;
-        width: 100%;
-        padding: 0.45rem 0.5rem;
+      .field {
+        display: grid;
+        gap: 0.35rem;
+        margin: 0;
+        padding: 0;
         border: 0;
+      }
+
+      .field-label {
+        margin: 0;
+      }
+
+      .control {
+        width: 100%;
+        padding: 0.4rem 0.5rem;
+        border: 1px solid var(--color-line);
         border-radius: var(--radius-sm);
-        color: inherit;
-        background: transparent;
-        font: inherit;
-        text-align: left;
+        color: var(--color-ink);
+        background: var(--color-surface);
+        font-size: var(--text-sm);
         cursor: pointer;
       }
 
-      .menu-item:hover {
+      .control:hover {
+        border-color: var(--color-ink-muted);
+      }
+
+      .segmented {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 0.25rem;
+        padding: 0.2rem;
+        border: 1px solid var(--color-line);
+        border-radius: var(--radius-sm);
         background: var(--color-surface-strong);
       }
 
-      .menu-item[aria-checked="true"] {
-        color: var(--color-leaf);
-        font-weight: 700;
+      .segment {
+        position: relative;
+        display: grid;
+        place-items: center;
+        padding: 0.3rem 0.25rem;
+        border-radius: calc(var(--radius-sm) - 0.05rem);
+        color: var(--color-ink-muted);
+        font-size: var(--text-xs);
+        text-align: center;
+        cursor: pointer;
       }
 
-      .check {
-        display: inline-grid;
-        width: 1rem;
-        place-items: center;
-        color: var(--color-leaf);
+      .segment input {
+        position: absolute;
+        inset: 0;
+        margin: 0;
+        opacity: 0;
+        cursor: pointer;
+      }
+
+      .segment:has(input:checked) {
+        color: var(--color-ink);
+        background: var(--color-surface);
+        box-shadow: var(--shadow-card);
+      }
+
+      .segment:has(input:focus-visible) {
+        outline: 3px solid var(--color-focus);
+        outline-offset: 2px;
       }
 
       @media (max-width: 20rem) {
@@ -215,7 +243,10 @@ export class AppHeader extends LitElement {
   locale: Locale = "en";
 
   @property({ attribute: false })
-  theme: ThemePreference = "system";
+  appearance: Appearance = "system";
+
+  @property({ attribute: false })
+  palette: Palette = "moka";
 
   @property({ attribute: false })
   query = "";
@@ -250,10 +281,7 @@ export class AppHeader extends LitElement {
     this.menuOpen = !this.menuOpen;
     await this.updateComplete;
     if (this.menuOpen) {
-      const checked = this.renderRoot.querySelector<HTMLElement>(
-        '[role="menuitemradio"][aria-checked="true"]',
-      );
-      (checked ?? this.renderRoot.querySelector<HTMLElement>('[role="menuitemradio"]'))?.focus();
+      this.renderRoot.querySelector<HTMLElement>(".menu select, .menu input")?.focus();
     }
   }
 
@@ -268,25 +296,36 @@ export class AppHeader extends LitElement {
     }
   }
 
-  private selectLocale(locale: Locale): void {
-    if (locale !== this.locale) {
+  private selectLocale(event: Event): void {
+    const value = (event.target as HTMLSelectElement).value as Locale;
+    if (value !== this.locale) {
       this.dispatchEvent(
-        new CustomEvent<Locale>("locale-change", {
+        new CustomEvent<Locale>("locale-change", { bubbles: true, composed: true, detail: value }),
+      );
+    }
+  }
+
+  private selectPalette(event: Event): void {
+    const value = (event.target as HTMLSelectElement).value as Palette;
+    if (value !== this.palette) {
+      this.dispatchEvent(
+        new CustomEvent<Palette>("palette-change", {
           bubbles: true,
           composed: true,
-          detail: locale,
+          detail: value,
         }),
       );
     }
   }
 
-  private selectTheme(theme: ThemePreference): void {
-    if (theme !== this.theme) {
+  private selectAppearance(event: Event): void {
+    const value = (event.target as HTMLInputElement).value as Appearance;
+    if (value !== this.appearance) {
       this.dispatchEvent(
-        new CustomEvent<ThemePreference>("theme-change", {
+        new CustomEvent<Appearance>("appearance-change", {
           bubbles: true,
           composed: true,
-          detail: theme,
+          detail: value,
         }),
       );
     }
@@ -296,20 +335,7 @@ export class AppHeader extends LitElement {
     if (event.key === "Escape") {
       event.stopPropagation();
       void this.closeMenu(true);
-      return;
     }
-    if (event.key !== "ArrowDown" && event.key !== "ArrowUp") {
-      return;
-    }
-    event.preventDefault();
-    const items = [...this.renderRoot.querySelectorAll<HTMLElement>('[role="menuitemradio"]')];
-    if (items.length === 0) {
-      return;
-    }
-    const current = items.indexOf(this.shadowRoot?.activeElement as HTMLElement);
-    const delta = event.key === "ArrowDown" ? 1 : -1;
-    const next = (current + delta + items.length) % items.length;
-    items[next]?.focus();
   }
 
   private changeSearch(event: Event): void {
@@ -379,7 +405,7 @@ export class AppHeader extends LitElement {
         <button
           class="settings-button"
           type="button"
-          aria-haspopup="menu"
+          aria-haspopup="true"
           aria-expanded=${this.menuOpen}
           aria-controls=${ifDefined(this.menuOpen ? "settings-menu" : undefined)}
           aria-label=${settingsLabel}
@@ -401,56 +427,74 @@ export class AppHeader extends LitElement {
         ${
           this.menuOpen
             ? html`
-              <div id="settings-menu" class="menu" role="menu" aria-label=${settingsLabel}>
-                <p class="eyebrow menu-group" aria-hidden="true">
-                  ${translate(this.locale, "languageLabel")}
-                </p>
-                <div role="group" aria-label=${translate(this.locale, "languageLabel")}>
-                  ${supportedLocales.map(
-                    (locale) => html`
-                      <button
-                        class="menu-item"
-                        type="button"
-                        role="menuitemradio"
-                        aria-checked=${this.locale === locale}
-                        @click=${() => this.selectLocale(locale)}
-                      >
-                        <span class="check" aria-hidden="true">
-                          ${this.locale === locale ? "✓" : ""}
-                        </span>
-                        ${translate(this.locale, locale === "fr" ? "french" : "english")}
-                      </button>
-                    `,
-                  )}
+              <div id="settings-menu" class="menu" role="group" aria-label=${settingsLabel}>
+                <div class="field">
+                  <label class="eyebrow field-label" for="language-select">
+                    ${translate(this.locale, "languageLabel")}
+                  </label>
+                  <select id="language-select" class="control" @change=${this.selectLocale}>
+                    ${supportedLocales.map(
+                      (locale) => html`
+                        <option value=${locale} ?selected=${this.locale === locale}>
+                          ${translate(this.locale, locale === "fr" ? "french" : "english")}
+                        </option>
+                      `,
+                    )}
+                  </select>
                 </div>
-                <p class="eyebrow menu-group menu-group--divided" aria-hidden="true">
-                  ${translate(this.locale, "appearance")}
-                </p>
-                <div role="group" aria-label=${translate(this.locale, "appearance")}>
-                  ${themePreferences.map(
-                    (theme) => html`
-                      <button
-                        class="menu-item"
-                        type="button"
-                        role="menuitemradio"
-                        aria-checked=${this.theme === theme}
-                        @click=${() => this.selectTheme(theme)}
-                      >
-                        <span class="check" aria-hidden="true">
-                          ${this.theme === theme ? "✓" : ""}
-                        </span>
-                        ${translate(
-                          this.locale,
-                          theme === "light"
-                            ? "themeLight"
-                            : theme === "dark"
-                              ? "themeDark"
-                              : "themeSystem",
-                        )}
-                      </button>
-                    `,
-                  )}
+
+                <div class="field">
+                  <label class="eyebrow field-label" for="theme-select">
+                    ${translate(this.locale, "theme")}
+                  </label>
+                  <select id="theme-select" class="control" @change=${this.selectPalette}>
+                    ${palettes.map(
+                      (palette) => html`
+                        <option value=${palette} ?selected=${this.palette === palette}>
+                          ${translate(
+                            this.locale,
+                            palette === "ocean"
+                              ? "themeOcean"
+                              : palette === "slate"
+                                ? "themeSlate"
+                                : "themeMoka",
+                          )}
+                        </option>
+                      `,
+                    )}
+                  </select>
                 </div>
+
+                <fieldset class="field">
+                  <legend class="eyebrow field-label">
+                    ${translate(this.locale, "appearance")}
+                  </legend>
+                  <div class="segmented">
+                    ${appearances.map(
+                      (appearance) => html`
+                        <label class="segment">
+                          <input
+                            type="radio"
+                            name="appearance"
+                            value=${appearance}
+                            ?checked=${this.appearance === appearance}
+                            @change=${this.selectAppearance}
+                          />
+                          <span>
+                            ${translate(
+                              this.locale,
+                              appearance === "light"
+                                ? "themeLight"
+                                : appearance === "dark"
+                                  ? "themeDark"
+                                  : "themeSystem",
+                            )}
+                          </span>
+                        </label>
+                      `,
+                    )}
+                  </div>
+                </fieldset>
               </div>
             `
             : null

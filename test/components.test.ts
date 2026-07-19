@@ -14,15 +14,15 @@ afterEach(() => {
 });
 
 describe("app-header", () => {
-  it("selects language and theme from the settings menu without closing it", async () => {
+  it("changes language, theme, and appearance from the settings menu without closing it", async () => {
     const header = document.createElement("app-header") as AppHeader;
     header.locale = "fr";
-    header.theme = "system";
+    header.appearance = "system";
+    header.palette = "moka";
     document.body.append(header);
     await header.updateComplete;
 
     const button = header.shadowRoot?.querySelector<HTMLButtonElement>(".settings-button");
-    expect(button).not.toBeNull();
     expect(button?.getAttribute("aria-expanded")).toBe("false");
     expect(header.shadowRoot?.querySelector(".menu")).toBeNull();
 
@@ -30,26 +30,43 @@ describe("app-header", () => {
     await header.updateComplete;
     expect(button?.getAttribute("aria-expanded")).toBe("true");
 
-    const items = [
-      ...(header.shadowRoot?.querySelectorAll<HTMLButtonElement>("[role='menuitemradio']") ?? []),
+    const localeSelect = header.shadowRoot?.querySelector<HTMLSelectElement>("#language-select");
+    const themeSelect = header.shadowRoot?.querySelector<HTMLSelectElement>("#theme-select");
+    const appearanceRadios = [
+      ...(header.shadowRoot?.querySelectorAll<HTMLInputElement>("input[name='appearance']") ?? []),
     ];
-    // 2 languages + 3 theme options.
-    expect(items).toHaveLength(5);
+    expect(localeSelect?.options).toHaveLength(2);
+    expect(themeSelect?.options).toHaveLength(3);
+    expect(appearanceRadios).toHaveLength(3);
 
     const localeListener = vi.fn();
-    const themeListener = vi.fn();
+    const paletteListener = vi.fn();
+    const appearanceListener = vi.fn();
     header.addEventListener("locale-change", localeListener);
-    header.addEventListener("theme-change", themeListener);
+    header.addEventListener("palette-change", paletteListener);
+    header.addEventListener("appearance-change", appearanceListener);
 
-    const english = items.find((item) => item.textContent?.includes("English"));
-    english?.click();
+    if (localeSelect) {
+      localeSelect.value = "en";
+      localeSelect.dispatchEvent(new Event("change"));
+    }
     expect(localeListener).toHaveBeenCalledOnce();
     expect(localeListener.mock.calls[0]?.[0]).toMatchObject({ detail: "en" });
 
-    const dark = items.find((item) => item.textContent?.includes("Sombre"));
-    dark?.click();
-    expect(themeListener).toHaveBeenCalledOnce();
-    expect(themeListener.mock.calls[0]?.[0]).toMatchObject({ detail: "dark" });
+    if (themeSelect) {
+      themeSelect.value = "ocean";
+      themeSelect.dispatchEvent(new Event("change"));
+    }
+    expect(paletteListener).toHaveBeenCalledOnce();
+    expect(paletteListener.mock.calls[0]?.[0]).toMatchObject({ detail: "ocean" });
+
+    const darkRadio = appearanceRadios.find((radio) => radio.value === "dark");
+    if (darkRadio) {
+      darkRadio.checked = true;
+      darkRadio.dispatchEvent(new Event("change"));
+    }
+    expect(appearanceListener).toHaveBeenCalledOnce();
+    expect(appearanceListener.mock.calls[0]?.[0]).toMatchObject({ detail: "dark" });
 
     // The settings menu stays open so multiple preferences can be changed.
     await header.updateComplete;
@@ -57,22 +74,23 @@ describe("app-header", () => {
     expect(button?.getAttribute("aria-expanded")).toBe("true");
   });
 
-  it("marks the active theme option as checked", async () => {
+  it("reflects the active appearance and palette in the controls", async () => {
     const header = document.createElement("app-header") as AppHeader;
-    header.theme = "dark";
+    header.appearance = "dark";
+    header.palette = "ocean";
     document.body.append(header);
     await header.updateComplete;
 
     header.shadowRoot?.querySelector<HTMLButtonElement>(".settings-button")?.click();
     await header.updateComplete;
 
-    const items = [
-      ...(header.shadowRoot?.querySelectorAll<HTMLButtonElement>("[role='menuitemradio']") ?? []),
-    ];
-    const checkedDark = items.find(
-      (item) => item.getAttribute("aria-checked") === "true" && item.textContent?.includes("Dark"),
+    expect(header.shadowRoot?.querySelector<HTMLSelectElement>("#theme-select")?.value).toBe(
+      "ocean",
     );
-    expect(checkedDark).toBeDefined();
+    const checked = header.shadowRoot?.querySelector<HTMLInputElement>(
+      "input[name='appearance']:checked",
+    );
+    expect(checked?.value).toBe("dark");
   });
 
   it("closes the settings menu on Escape and returns focus to the button", async () => {

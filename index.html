@@ -11,19 +11,30 @@
     <link rel="icon" type="image/svg+xml" href="./favicon.svg" />
     <title>Miam — Family recipes</title>
     <script>
-      // Apply the saved theme (and matching browser-chrome color) before first paint.
+      // Apply the saved palette + appearance (and matching browser-chrome color) before
+      // first paint, mirroring src/lib/theme.ts to avoid a flash of the wrong theme.
       (() => {
         try {
-          const theme = localStorage.getItem("miam:theme");
-          if (theme === "light" || theme === "dark") {
-            document.documentElement.dataset.theme = theme;
-          }
-          const dark =
-            theme === "dark" ||
-            (theme !== "light" && matchMedia("(prefers-color-scheme: dark)").matches);
+          const canvases = {
+            moka: { light: "#f6f3ee", dark: "#17130f" },
+            ocean: { light: "#eef4f6", dark: "#0c1416" },
+            slate: { light: "#f1f3f6", dark: "#0f1219" },
+          };
+          const appearance =
+            localStorage.getItem("miam:appearance") ?? localStorage.getItem("miam:theme");
+          const palette = localStorage.getItem("miam:palette");
+          const paletteId = canvases[palette] ? palette : "moka";
+          const mode =
+            appearance === "dark" ||
+            (appearance !== "light" && matchMedia("(prefers-color-scheme: dark)").matches)
+              ? "dark"
+              : "light";
+          const root = document.documentElement;
+          root.dataset.theme = paletteId;
+          root.dataset.mode = mode;
           document
             .querySelector('meta[name="theme-color"]')
-            ?.setAttribute("content", dark ? "#17130f" : "#f6f3ee");
+            ?.setAttribute("content", canvases[paletteId][mode]);
         } catch {}
       })();
     </script>
