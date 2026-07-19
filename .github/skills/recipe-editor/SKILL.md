@@ -108,6 +108,10 @@ value. **No raw HTML, no images in the body**, and links may only be
   no units, no ranges.
 - Times/servings, tags, and cuisine still stay in the source language when
   `language: fr`.
+- Quote any frontmatter string value that contains YAML-special characters —
+  a colon-space (`: `), a leading `- `, `#`, `[`, `{`, `"`, `'`, `|`, `>`, etc.
+  Wrap it in double quotes, e.g. `description: "Croustillantes dehors : moelleuses
+  dedans."` An unquoted colon makes YAML parsing fail and the build error.
 - Slug must be unique; check `recipes/` before naming a new file.
 - Validate with `npm run build`, not just a visual check — strict validation
   catches issues render-time never would.
