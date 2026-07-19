@@ -34,7 +34,8 @@ const messages = {
     backToRecipes: "All recipes",
     notFoundTitle: "Recipe not found",
     notFoundBody: "This recipe may have moved or is not in the family collection.",
-    sourceCode: "GitHub repository",
+    sourceCode: "GitHub",
+    viewCommit: "View commit {sha} on GitHub",
     skipToContent: "Skip to recipes",
   },
   fr: {
@@ -67,7 +68,8 @@ const messages = {
     backToRecipes: "Toutes les recettes",
     notFoundTitle: "Recette introuvable",
     notFoundBody: "Cette recette a peut-être été déplacée ou retirée de la collection.",
-    sourceCode: "Dépôt GitHub",
+    sourceCode: "GitHub",
+    viewCommit: "Voir le commit {sha} sur GitHub",
     skipToContent: "Aller aux recettes",
   },
 } as const;

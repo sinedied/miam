@@ -27,12 +27,23 @@ export class RecipeDetail extends LitElement {
         margin-bottom: var(--space-4);
         color: var(--color-leaf);
         font-weight: 700;
-        text-underline-offset: 0.2em;
+        text-decoration: none;
       }
 
       .back::before {
         content: "←";
         font-size: 1.2em;
+        transition: transform 0.15s ease;
+      }
+
+      .back:hover::before {
+        transform: translateX(-0.25em);
+      }
+
+      @media (prefers-reduced-motion: reduce) {
+        .back::before {
+          transition: none;
+        }
       }
 
       article {

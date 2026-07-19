@@ -211,13 +211,13 @@ describe("recipe-detail", () => {
     const [minus, plus] = buttons();
     expect(value()).toBe("4");
 
-    // Increase to 6 servings: 4 tomatoes -> 6, 1 sheet -> 1.5 sheet.
+    // Increase to 6 servings: 4 tomatoes -> 6, 1 sheet -> 1 1/2 sheet.
     plus?.click();
     plus?.click();
     await detail.updateComplete;
     expect(value()).toBe("6");
     expect(detail.shadowRoot?.textContent).toContain("6 tomatoes");
-    expect(detail.shadowRoot?.textContent).toContain("1.5 sheet puff pastry");
+    expect(detail.shadowRoot?.textContent).toContain("1 1/2 sheet puff pastry");
 
     // Clamp at the minimum of 1.
     for (let i = 0; i < 10; i++) {
@@ -239,7 +239,7 @@ describe("recipe-detail", () => {
 });
 
 describe("app-footer", () => {
-  it("renders the commit and repository link as a subtle line", async () => {
+  it("links the commit to GitHub and renders a GitHub link with a logo", async () => {
     const footer = document.createElement("app-footer") as AppFooter;
     footer.locale = "en";
     document.body.append(footer);
@@ -247,9 +247,17 @@ describe("app-footer", () => {
 
     expect(footer.shadowRoot?.textContent).toContain("test123");
     expect(footer.shadowRoot?.textContent).not.toContain("deployed");
-    const link = footer.shadowRoot?.querySelector("a");
-    expect(link?.getAttribute("href")).toBe("https://github.com/example/miam");
-    expect(link?.getAttribute("target")).toBe("_blank");
-    expect(link?.textContent).toContain("GitHub");
+
+    const commitLink = footer.shadowRoot?.querySelector("a[aria-label]");
+    expect(commitLink?.getAttribute("href")).toBe("https://github.com/example/miam/commit/test123");
+    expect(commitLink?.getAttribute("target")).toBe("_blank");
+    expect(commitLink?.getAttribute("aria-label")).toBe("View commit test123 on GitHub");
+    expect(commitLink?.querySelector("code")?.textContent).toBe("test123");
+
+    const githubLink = footer.shadowRoot?.querySelector("a.github");
+    expect(githubLink?.getAttribute("href")).toBe("https://github.com/example/miam");
+    expect(githubLink?.getAttribute("target")).toBe("_blank");
+    expect(githubLink?.textContent).toContain("GitHub");
+    expect(githubLink?.querySelector("svg")).toBeTruthy();
   });
 });
