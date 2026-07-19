@@ -56,7 +56,7 @@ export class RecipeDetail extends LitElement {
         display: grid;
         grid-template-columns: minmax(0, 1fr) minmax(15rem, 0.44fr);
         grid-template-areas: "hero side" "method side";
-        gap: var(--space-5) clamp(1.25rem, 4vw, 3rem);
+        gap: var(--space-5);
         align-items: start;
       }
 

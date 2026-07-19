@@ -51,11 +51,11 @@ describe("theme — appearance", () => {
 });
 
 describe("theme — palette", () => {
-  it("loads a valid saved palette and falls back to moka", () => {
+  it("loads a valid saved palette and falls back to terracotta", () => {
     expect(loadPalette({ getItem: () => "ocean" })).toBe("ocean");
-    expect(loadPalette({ getItem: () => "slate" })).toBe("slate");
-    expect(loadPalette({ getItem: () => "not-a-palette" })).toBe("moka");
-    expect(loadPalette({ getItem: () => null })).toBe("moka");
+    expect(loadPalette({ getItem: () => "berry" })).toBe("berry");
+    expect(loadPalette({ getItem: () => "not-a-palette" })).toBe("terracotta");
+    expect(loadPalette({ getItem: () => null })).toBe("terracotta");
   });
 
   it("persists the palette", () => {
@@ -71,13 +71,13 @@ describe("theme — apply & resolve", () => {
     applyTheme("ocean", "dark", root);
     expect(root.dataset.theme).toBe("ocean");
     expect(root.dataset.mode).toBe("dark");
-    applyTheme("moka", "light", root);
-    expect(root.dataset.theme).toBe("moka");
+    applyTheme("terracotta", "light", root);
+    expect(root.dataset.theme).toBe("terracotta");
     expect(root.dataset.mode).toBe("light");
   });
 
   it("is a no-op when there is no root element", () => {
-    expect(() => applyTheme("moka", "dark", undefined)).not.toThrow();
+    expect(() => applyTheme("terracotta", "dark", undefined)).not.toThrow();
   });
 
   it("resolves system to the OS preference and forces otherwise", () => {

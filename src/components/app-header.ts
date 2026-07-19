@@ -246,7 +246,7 @@ export class AppHeader extends LitElement {
   appearance: Appearance = "system";
 
   @property({ attribute: false })
-  palette: Palette = "moka";
+  palette: Palette = "terracotta";
 
   @property({ attribute: false })
   query = "";
@@ -453,11 +453,14 @@ export class AppHeader extends LitElement {
                         <option value=${palette} ?selected=${this.palette === palette}>
                           ${translate(
                             this.locale,
-                            palette === "ocean"
-                              ? "themeOcean"
-                              : palette === "slate"
-                                ? "themeSlate"
-                                : "themeMoka",
+                            (
+                              {
+                                terracotta: "themeTerracotta",
+                                ocean: "themeOcean",
+                                slate: "themeSlate",
+                                berry: "themeBerry",
+                              } as const
+                            )[palette],
                           )}
                         </option>
                       `,

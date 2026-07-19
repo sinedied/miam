@@ -18,7 +18,7 @@ describe("app-header", () => {
     const header = document.createElement("app-header") as AppHeader;
     header.locale = "fr";
     header.appearance = "system";
-    header.palette = "moka";
+    header.palette = "terracotta";
     document.body.append(header);
     await header.updateComplete;
 
@@ -36,7 +36,7 @@ describe("app-header", () => {
       ...(header.shadowRoot?.querySelectorAll<HTMLInputElement>("input[name='appearance']") ?? []),
     ];
     expect(localeSelect?.options).toHaveLength(2);
-    expect(themeSelect?.options).toHaveLength(3);
+    expect(themeSelect?.options).toHaveLength(4);
     expect(appearanceRadios).toHaveLength(3);
 
     const localeListener = vi.fn();

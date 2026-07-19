@@ -35,7 +35,7 @@
   --content-width: 78rem;
   --header-height: 3.25rem;
 
-  /* Moka palette — light (default). */
+  /* Terracotta palette — light (default). */
   color-scheme: light;
   --color-canvas: #f6f3ee;
   --color-surface: #fffdfa;
@@ -51,8 +51,8 @@
   --shadow-card: 0 1px 2px rgb(35 32 28 / 6%), 0 12px 28px rgb(35 32 28 / 6%);
 }
 
-/* Moka — dark. The media block is the pre-JS fallback for a dark OS preference on the
-   default palette (avoids a light flash); JS then sets data-mode explicitly. */
+/* Terracotta — dark. The media block is the pre-JS fallback for a dark OS preference on
+   the default palette (avoids a light flash); JS then sets data-mode explicitly. */
 @media (prefers-color-scheme: dark) {
   :root:not([data-mode]) {
     color-scheme: dark;
@@ -71,7 +71,7 @@
   }
 }
 
-:root[data-theme="moka"][data-mode="dark"],
+:root[data-theme="terracotta"][data-mode="dark"],
 :root[data-mode="dark"]:not([data-theme]) {
   color-scheme: dark;
   --color-canvas: #17130f;
@@ -88,19 +88,19 @@
   --shadow-card: 0 1px 2px rgb(0 0 0 / 40%), 0 14px 30px rgb(0 0 0 / 35%);
 }
 
-/* Ocean palette — light. */
+/* Ocean palette — light (sea-blue brand + coral accent). */
 :root[data-theme="ocean"] {
   color-scheme: light;
-  --color-canvas: #eef4f6;
+  --color-canvas: #edf3f7;
   --color-surface: #ffffff;
-  --color-surface-strong: #dbe9ed;
-  --color-ink: #142a30;
-  --color-ink-muted: #4f6b72;
-  --color-line: #c9dde2;
-  --color-accent: #0e7c86;
-  --color-accent-strong: #0a5f67;
-  --color-accent-soft: #d8ecef;
-  --color-leaf: #256d78;
+  --color-surface-strong: #dce8f0;
+  --color-ink: #16272f;
+  --color-ink-muted: #506672;
+  --color-line: #cbdbe6;
+  --color-accent: #e0673f;
+  --color-accent-strong: #c1502c;
+  --color-accent-soft: #f8e4dc;
+  --color-leaf: #1f6f9c;
   --color-focus: #2f6ede;
   --shadow-card: 0 1px 2px rgb(16 40 45 / 8%), 0 12px 28px rgb(16 40 45 / 8%);
 }
@@ -108,50 +108,84 @@
 /* Ocean palette — dark. */
 :root[data-theme="ocean"][data-mode="dark"] {
   color-scheme: dark;
-  --color-canvas: #0c1416;
-  --color-surface: #121e21;
-  --color-surface-strong: #1c2c30;
-  --color-ink: #e6f1f3;
-  --color-ink-muted: #93b0b6;
-  --color-line: #26383d;
-  --color-accent: #35b3bf;
-  --color-accent-strong: #5ecad4;
-  --color-accent-soft: #10262a;
-  --color-leaf: #4fb3ad;
+  --color-canvas: #0c151b;
+  --color-surface: #131f27;
+  --color-surface-strong: #1d2c36;
+  --color-ink: #e6eff5;
+  --color-ink-muted: #92a7b3;
+  --color-line: #263845;
+  --color-accent: #ef8663;
+  --color-accent-strong: #f6a184;
+  --color-accent-soft: #2c1a13;
+  --color-leaf: #59a9d8;
   --color-focus: #8bb4ff;
   --shadow-card: 0 1px 2px rgb(0 0 0 / 45%), 0 14px 30px rgb(0 0 0 / 40%);
 }
 
-/* Slate palette — light. */
+/* Slate palette — light (neutral gray base, slate-blue brand + amber accent). */
 :root[data-theme="slate"] {
   color-scheme: light;
-  --color-canvas: #f1f3f6;
+  --color-canvas: #f2f3f5;
   --color-surface: #ffffff;
-  --color-surface-strong: #e1e6ec;
-  --color-ink: #1c2230;
-  --color-ink-muted: #5a6478;
-  --color-line: #d3d9e2;
-  --color-accent: #3b62c4;
-  --color-accent-strong: #2f4fa0;
-  --color-accent-soft: #e2e8f7;
-  --color-leaf: #45589a;
+  --color-surface-strong: #e4e6ea;
+  --color-ink: #202329;
+  --color-ink-muted: #5c626c;
+  --color-line: #d8dae0;
+  --color-accent: #bd7a26;
+  --color-accent-strong: #9a6218;
+  --color-accent-soft: #f2e7d3;
+  --color-leaf: #4a5b80;
   --color-focus: #2f6ede;
-  --shadow-card: 0 1px 2px rgb(28 34 48 / 8%), 0 12px 28px rgb(28 34 48 / 8%);
+  --shadow-card: 0 1px 2px rgb(30 33 40 / 8%), 0 12px 28px rgb(30 33 40 / 8%);
 }
 
 /* Slate palette — dark. */
 :root[data-theme="slate"][data-mode="dark"] {
   color-scheme: dark;
-  --color-canvas: #0f1219;
-  --color-surface: #171b24;
-  --color-surface-strong: #222736;
-  --color-ink: #e7eaf2;
-  --color-ink-muted: #9aa3b8;
-  --color-line: #2b3040;
-  --color-accent: #6a8bff;
-  --color-accent-strong: #8aa4ff;
-  --color-accent-soft: #182034;
-  --color-leaf: #7e93e0;
+  --color-canvas: #121316;
+  --color-surface: #1a1c20;
+  --color-surface-strong: #24272d;
+  --color-ink: #e8eaee;
+  --color-ink-muted: #9aa0ab;
+  --color-line: #2e3138;
+  --color-accent: #d99f52;
+  --color-accent-strong: #e8b56b;
+  --color-accent-soft: #2a2013;
+  --color-leaf: #8695c1;
+  --color-focus: #8bb4ff;
+  --shadow-card: 0 1px 2px rgb(0 0 0 / 45%), 0 14px 30px rgb(0 0 0 / 40%);
+}
+
+/* Berry palette — light (plum brand + sage-green accent). */
+:root[data-theme="berry"] {
+  color-scheme: light;
+  --color-canvas: #f8eef3;
+  --color-surface: #fffbfd;
+  --color-surface-strong: #efdde7;
+  --color-ink: #2a1e26;
+  --color-ink-muted: #6d5b65;
+  --color-line: #e7d2dd;
+  --color-accent: #4f8f68;
+  --color-accent-strong: #3c7353;
+  --color-accent-soft: #dcece2;
+  --color-leaf: #9c3f6d;
+  --color-focus: #2f6ede;
+  --shadow-card: 0 1px 2px rgb(42 30 38 / 8%), 0 12px 28px rgb(42 30 38 / 8%);
+}
+
+/* Berry palette — dark. */
+:root[data-theme="berry"][data-mode="dark"] {
+  color-scheme: dark;
+  --color-canvas: #161016;
+  --color-surface: #201823;
+  --color-surface-strong: #2c202c;
+  --color-ink: #f3e8ef;
+  --color-ink-muted: #b199a6;
+  --color-line: #382936;
+  --color-accent: #72b189;
+  --color-accent-strong: #8fcaa2;
+  --color-accent-soft: #16231a;
+  --color-leaf: #d07bab;
   --color-focus: #8bb4ff;
   --shadow-card: 0 1px 2px rgb(0 0 0 / 45%), 0 14px 30px rgb(0 0 0 / 40%);
 }

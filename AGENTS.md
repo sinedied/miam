@@ -62,7 +62,8 @@ tokens everywhere — do not hard-code colors, font sizes, spacing, or radii in 
 - **Theming has two axes**, both persisted to `localStorage` and applied on load:
   - **Appearance** (`miam:appearance`): `system` | `light` | `dark` (a radio group in
     settings). `system` follows the OS via `matchMedia`.
-  - **Palette** (`miam:palette`): `moka` (default) | `ocean` | `slate` (a dropdown).
+  - **Palette** (`miam:palette`): `terracotta` (default) | `ocean` | `slate` | `berry` (a
+    dropdown).
   - JS resolves appearance→mode and sets `data-theme="<palette>"` + `data-mode="light|dark"`
     on `<html>`; the CSS token blocks key off those attributes. See `src/lib/theme.ts`.
 - **To add a palette**: add its id to `palettes` in `src/lib/theme.ts`, add a

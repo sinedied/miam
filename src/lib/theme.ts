@@ -1,7 +1,7 @@
 export const appearances = ["system", "light", "dark"] as const;
 export type Appearance = (typeof appearances)[number];
 
-export const palettes = ["moka", "ocean", "slate"] as const;
+export const palettes = ["terracotta", "ocean", "slate", "berry"] as const;
 export type Palette = (typeof palettes)[number];
 
 export type Mode = "light" | "dark";
@@ -60,7 +60,7 @@ export function loadPalette(
   } catch (error) {
     console.warn("Miam could not read the saved theme preference.", error);
   }
-  return "moka";
+  return "terracotta";
 }
 
 export function savePalette(
@@ -103,7 +103,8 @@ export function applyTheme(
 
 /** Meta theme-color (canvas) for each palette and mode, matching global.css. */
 export const themeColors: Record<Palette, Record<Mode, string>> = {
-  moka: { light: "#f6f3ee", dark: "#17130f" },
-  ocean: { light: "#eef4f6", dark: "#0c1416" },
-  slate: { light: "#f1f3f6", dark: "#0f1219" },
+  terracotta: { light: "#f6f3ee", dark: "#17130f" },
+  ocean: { light: "#edf3f7", dark: "#0c151b" },
+  slate: { light: "#f2f3f5", dark: "#121316" },
+  berry: { light: "#f8eef3", dark: "#161016" },
 };
