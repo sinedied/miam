@@ -1,0 +1,28 @@
+---
+title: Sorbet à la banane
+description: Un sorbet banane et yaourt grec tout en douceur et impossible à rater.
+language: fr
+prepTime: 5
+cookTime: 50
+servings: 6
+cuisine: Française
+tags:
+  - dessert
+  - sorbet
+  - banane
+ingredients:
+  - name: grosses bananes
+    quantity: 6
+  - name: sirop de sucre de canne
+    quantity: 15
+    unit: cl
+  - name: yaourt grec
+    quantity: 1
+  - name: jus d'un demi-citron
+---
+
+1. Épluchez les bananes et mettez-les dans le bol du mixeur en morceaux.
+2. Ajoutez le sirop de sucre de canne, le yaourt grec et le jus du demi-citron.
+3. Mixez jusqu'à obtenir un mélange lisse.
+4. Versez dans la sorbetière et turbinez 50 minutes.
+5. Dégustez aussitôt ou placez au congélateur.
