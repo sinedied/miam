@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { parseRoute, recipeHref } from "../src/lib/router";
+import { catalogHref, parseRoute, parseSearchQuery, recipeHref } from "../src/lib/router";
 
 describe("hash router", () => {
   it("parses recipe routes and decoded slugs", () => {
@@ -27,5 +27,24 @@ describe("hash router", () => {
 
   it("builds encoded recipe links", () => {
     expect(recipeHref("tarte fine")).toBe("#/recipes/tarte%20fine");
+  });
+
+  it("parses the search query from the hash", () => {
+    expect(parseSearchQuery("#/")).toBe("");
+    expect(parseSearchQuery("")).toBe("");
+    expect(parseSearchQuery("#/?q=kinder")).toBe("kinder");
+    expect(parseSearchQuery("#/?q=tomato%20soup")).toBe("tomato soup");
+    expect(parseSearchQuery("#/?other=1")).toBe("");
+    expect(parseSearchQuery("#/?q=a%2Bb")).toBe("a+b");
+  });
+
+  it("builds the catalog hash for a query and round-trips", () => {
+    expect(catalogHref("")).toBe("#/");
+    expect(catalogHref("   ")).toBe("#/");
+    expect(catalogHref("kinder")).toBe("#/?q=kinder");
+    expect(catalogHref("tomato soup")).toBe("#/?q=tomato%20soup");
+    for (const query of ["kinder", "tomato soup", "a+b", "crème brûlée"]) {
+      expect(parseSearchQuery(catalogHref(query))).toBe(query);
+    }
   });
 });

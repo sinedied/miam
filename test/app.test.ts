@@ -48,6 +48,68 @@ describe("miam-app", () => {
     expect(app.shadowRoot?.querySelector(".count")?.textContent).toContain("0 recipes");
   });
 
+  it("reflects the search query in the URL and clears it", async () => {
+    const app = await renderApp();
+    const header = app.shadowRoot?.querySelector("app-header");
+    const input = header?.shadowRoot?.querySelector<HTMLInputElement>("#recipe-search");
+    if (!input) {
+      throw new Error("missing search input");
+    }
+
+    input.value = "kinder";
+    input.dispatchEvent(new InputEvent("input"));
+    await app.updateComplete;
+    expect(globalThis.location.hash).toBe("#/?q=kinder");
+
+    header?.shadowRoot?.querySelector<HTMLButtonElement>(".clear")?.click();
+    await app.updateComplete;
+    expect(globalThis.location.hash).toBe("#/");
+  });
+
+  it("restores the search from a shared URL on load", async () => {
+    history.replaceState(null, "", "#/?q=kinder");
+    const app = await renderApp();
+
+    expect(app.shadowRoot?.querySelectorAll("recipe-card")).toHaveLength(1);
+    const input = app.shadowRoot
+      ?.querySelector("app-header")
+      ?.shadowRoot?.querySelector<HTMLInputElement>("#recipe-search");
+    expect(input?.value).toBe("kinder");
+  });
+
+  it("syncs the search when the hash changes (back/forward, shared link)", async () => {
+    const app = await renderApp();
+    expect(app.shadowRoot?.querySelectorAll("recipe-card")).toHaveLength(recipes.length);
+
+    setHash("#/?q=kinder");
+    await app.updateComplete;
+
+    expect(app.shadowRoot?.querySelectorAll("recipe-card")).toHaveLength(1);
+    const input = app.shadowRoot
+      ?.querySelector("app-header")
+      ?.shadowRoot?.querySelector<HTMLInputElement>("#recipe-search");
+    expect(input?.value).toBe("kinder");
+  });
+
+  it("restores the search after opening a recipe and navigating back", async () => {
+    const app = await renderApp();
+    setHash("#/?q=kinder");
+    await app.updateComplete;
+    expect(app.shadowRoot?.querySelectorAll("recipe-card")).toHaveLength(1);
+
+    setHash(`#/recipes/${recipes[0].slug}`);
+    await app.updateComplete;
+    expect(app.shadowRoot?.querySelector("recipe-detail")).not.toBeNull();
+
+    setHash("#/?q=kinder");
+    await app.updateComplete;
+    expect(app.shadowRoot?.querySelectorAll("recipe-card")).toHaveLength(1);
+    const restored = app.shadowRoot
+      ?.querySelector("app-header")
+      ?.shadowRoot?.querySelector<HTMLInputElement>("#recipe-search");
+    expect(restored?.value).toBe("kinder");
+  });
+
   it("renders recipe details and manages focus after hash navigation", async () => {
     const app = await renderApp();
     const target = recipes[0];

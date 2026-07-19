@@ -6,7 +6,7 @@ import "./components/app-header";
 import "./components/recipe-card";
 import "./components/recipe-detail";
 import { type Locale, loadLocale, saveLocale, translate } from "./lib/i18n";
-import { parseRoute, type Route } from "./lib/router";
+import { catalogHref, parseRoute, parseSearchQuery, type Route } from "./lib/router";
 import { searchRecipes } from "./lib/search";
 import {
   applyTheme,
@@ -151,10 +151,11 @@ export class MiamApp extends LitElement {
   private route: Route = parseRoute(globalThis.location?.hash ?? "");
 
   @state()
-  private query = "";
+  private query = parseSearchQuery(globalThis.location?.hash ?? "");
 
   private readonly onHashChange = (): void => {
     this.route = parseRoute(globalThis.location.hash);
+    this.query = parseSearchQuery(globalThis.location.hash);
     this.updateDocumentTitle();
     globalThis.scrollTo?.({ top: 0, behavior: "instant" });
     void this.updateComplete.then(() => {
@@ -210,10 +211,24 @@ export class MiamApp extends LitElement {
 
   private changeQuery(event: CustomEvent<string>): void {
     this.query = event.detail;
+    this.syncQueryToUrl();
   }
 
   private clearQuery(): void {
     this.query = "";
+    this.syncQueryToUrl();
+  }
+
+  /**
+   * Reflects the current search query into the URL so a search can be shared or
+   * restored. Uses `replaceState` (no `hashchange`) to avoid per-keystroke history
+   * entries and the scroll/focus handling in `onHashChange`.
+   */
+  private syncQueryToUrl(): void {
+    const target = catalogHref(this.query);
+    if (globalThis.location.hash !== target) {
+      globalThis.history.replaceState(null, "", target);
+    }
   }
 
   private skipToContent(event: Event): void {
