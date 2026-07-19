@@ -7,6 +7,7 @@ image:
   alt: Une boule de glace au Kinder Bueno décorée de carrés de Kinder Bueno
 prepTime: 10
 cookTime: 40
+cookTimeLabel: Turbinage
 servings: 8
 cuisine: Française
 tags:

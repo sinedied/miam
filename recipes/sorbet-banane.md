@@ -7,6 +7,7 @@ image:
   alt: Deux boules de sorbet à la banane dans une coupe en verre
 prepTime: 5
 cookTime: 50
+cookTimeLabel: Turbinage
 servings: 8
 cuisine: Française
 tags:

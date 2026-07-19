@@ -4,6 +4,7 @@ description: Une pâte à pizza maison parfaite, prête à garnir.
 language: fr
 prepTime: 15
 cookTime: 120
+cookTimeLabel: Levage
 servings: 3
 cuisine: Italienne
 tags:
