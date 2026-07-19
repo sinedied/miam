@@ -10,6 +10,7 @@ tags:
   - dessert
   - sorbet
   - banane
+  - glace
 ingredients:
   - name: grosses bananes
     quantity: 6
