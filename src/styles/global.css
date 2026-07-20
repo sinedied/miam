@@ -88,21 +88,21 @@
   --shadow-card: 0 1px 2px rgb(0 0 0 / 40%), 0 14px 30px rgb(0 0 0 / 35%);
 }
 
-/* Ocean palette — light (sea-blue brand + coral accent). */
+/* Ocean palette — light (deep-teal brand + coral accent, near-white canvas). */
 :root[data-theme="ocean"] {
   color-scheme: light;
-  --color-canvas: #edf3f7;
+  --color-canvas: #f7fafa;
   --color-surface: #ffffff;
-  --color-surface-strong: #dce8f0;
-  --color-ink: #16272f;
-  --color-ink-muted: #506672;
-  --color-line: #cbdbe6;
-  --color-accent: #e0673f;
-  --color-accent-strong: #c1502c;
-  --color-accent-soft: #f8e4dc;
-  --color-leaf: #1f6f9c;
+  --color-surface-strong: #edf3f4;
+  --color-ink: #17282d;
+  --color-ink-muted: #566b70;
+  --color-line: #e4ecee;
+  --color-accent: #d15f3d;
+  --color-accent-strong: #b04a2b;
+  --color-accent-soft: #f7e7e0;
+  --color-leaf: #106e77;
   --color-focus: #2f6ede;
-  --shadow-card: 0 1px 2px rgb(16 40 45 / 8%), 0 12px 28px rgb(16 40 45 / 8%);
+  --shadow-card: 0 1px 2px rgb(16 40 45 / 6%), 0 12px 28px rgb(16 40 45 / 6%);
 }
 
 /* Ocean palette — dark. */
@@ -117,26 +117,26 @@
   --color-accent: #ef8663;
   --color-accent-strong: #f6a184;
   --color-accent-soft: #2c1a13;
-  --color-leaf: #59a9d8;
+  --color-leaf: #46b0b8;
   --color-focus: #8bb4ff;
   --shadow-card: 0 1px 2px rgb(0 0 0 / 45%), 0 14px 30px rgb(0 0 0 / 40%);
 }
 
-/* Slate palette — light (neutral gray base, slate-blue brand + amber accent). */
+/* Slate palette — light (near-white neutral gray, slate-blue brand + amber accent). */
 :root[data-theme="slate"] {
   color-scheme: light;
-  --color-canvas: #f2f3f5;
+  --color-canvas: #f8f9fa;
   --color-surface: #ffffff;
-  --color-surface-strong: #e4e6ea;
-  --color-ink: #202329;
-  --color-ink-muted: #5c626c;
-  --color-line: #d8dae0;
-  --color-accent: #bd7a26;
-  --color-accent-strong: #9a6218;
-  --color-accent-soft: #f2e7d3;
-  --color-leaf: #4a5b80;
+  --color-surface-strong: #eef0f2;
+  --color-ink: #1f242b;
+  --color-ink-muted: #5b626d;
+  --color-line: #e6e8ec;
+  --color-accent: #b3792a;
+  --color-accent-strong: #98631d;
+  --color-accent-soft: #f1e8d6;
+  --color-leaf: #4a5a86;
   --color-focus: #2f6ede;
-  --shadow-card: 0 1px 2px rgb(30 33 40 / 8%), 0 12px 28px rgb(30 33 40 / 8%);
+  --shadow-card: 0 1px 2px rgb(30 33 40 / 6%), 0 12px 28px rgb(30 33 40 / 6%);
 }
 
 /* Slate palette — dark. */
@@ -156,21 +156,21 @@
   --shadow-card: 0 1px 2px rgb(0 0 0 / 45%), 0 14px 30px rgb(0 0 0 / 40%);
 }
 
-/* Berry palette — light (plum brand + sage-green accent). */
+/* Berry palette — light (plum brand + sage-green accent, near-white warm canvas). */
 :root[data-theme="berry"] {
   color-scheme: light;
-  --color-canvas: #f8eef3;
-  --color-surface: #fffbfd;
-  --color-surface-strong: #efdde7;
-  --color-ink: #2a1e26;
-  --color-ink-muted: #6d5b65;
-  --color-line: #e7d2dd;
-  --color-accent: #4f8f68;
-  --color-accent-strong: #3c7353;
-  --color-accent-soft: #dcece2;
-  --color-leaf: #9c3f6d;
+  --color-canvas: #faf6f8;
+  --color-surface: #ffffff;
+  --color-surface-strong: #f2e9ee;
+  --color-ink: #271d24;
+  --color-ink-muted: #6b5b64;
+  --color-line: #ece1e7;
+  --color-accent: #4d8a63;
+  --color-accent-strong: #3c7052;
+  --color-accent-soft: #dfeae2;
+  --color-leaf: #9b3d6b;
   --color-focus: #2f6ede;
-  --shadow-card: 0 1px 2px rgb(42 30 38 / 8%), 0 12px 28px rgb(42 30 38 / 8%);
+  --shadow-card: 0 1px 2px rgb(42 30 38 / 6%), 0 12px 28px rgb(42 30 38 / 6%);
 }
 
 /* Berry palette — dark. */

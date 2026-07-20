@@ -165,7 +165,7 @@ export class AppHeader extends LitElement {
 
       .field {
         display: grid;
-        gap: 0.35rem;
+        gap: var(--space-2);
         margin: 0;
         padding: 0;
         border: 0;
@@ -173,6 +173,12 @@ export class AppHeader extends LitElement {
 
       .field-label {
         margin: 0;
+      }
+
+      /* A fieldset <legend> is not a grid item, so it ignores the field gap; give the
+         appearance group the same label-to-control spacing explicitly. */
+      legend.field-label {
+        margin-bottom: var(--space-2);
       }
 
       .control {

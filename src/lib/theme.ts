@@ -104,7 +104,7 @@ export function applyTheme(
 /** Meta theme-color (canvas) for each palette and mode, matching global.css. */
 export const themeColors: Record<Palette, Record<Mode, string>> = {
   terracotta: { light: "#f6f3ee", dark: "#17130f" },
-  ocean: { light: "#edf3f7", dark: "#0c151b" },
-  slate: { light: "#f2f3f5", dark: "#121316" },
-  berry: { light: "#f8eef3", dark: "#161016" },
+  ocean: { light: "#f7fafa", dark: "#0c151b" },
+  slate: { light: "#f8f9fa", dark: "#121316" },
+  berry: { light: "#faf6f8", dark: "#161016" },
 };
