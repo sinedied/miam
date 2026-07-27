@@ -132,7 +132,8 @@
   --color-ink-muted: #4c5053;
   --color-line: #d9dde0;
   --color-accent: #4a5762;
-  --color-accent-strong: #303c47;
+  /* Tags/links reuse the brand (logo) color. */
+  --color-accent-strong: var(--color-leaf);
   --color-accent-soft: #e6eaee;
   --color-leaf: #435e93;
   --color-focus: #816d00;
@@ -149,7 +150,8 @@
   --color-ink-muted: #9fa5aa;
   --color-line: #313538;
   --color-accent: #9fadb9;
-  --color-accent-strong: #bbc9d7;
+  /* Tags/links reuse the brand (logo) color. */
+  --color-accent-strong: var(--color-leaf);
   --color-accent-soft: #212428;
   --color-leaf: #b4a99e;
   --color-focus: #d0b74a;
