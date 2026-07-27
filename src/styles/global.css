@@ -88,7 +88,7 @@
   --shadow-card: 0 1px 2px rgb(0 0 0 / 40%), 0 14px 30px rgb(0 0 0 / 35%);
 }
 
-/* Ocean palette — light (deep-teal brand + coral accent, near-white canvas). */
+/* Ocean palette — light (deep-teal brand + cyan accent, near-white canvas). */
 :root[data-theme="ocean"] {
   color-scheme: light;
   --color-canvas: #f7fafa;
@@ -97,9 +97,9 @@
   --color-ink: #17282d;
   --color-ink-muted: #566b70;
   --color-line: #e4ecee;
-  --color-accent: #d15f3d;
-  --color-accent-strong: #b04a2b;
-  --color-accent-soft: #f7e7e0;
+  --color-accent: #3dc8d1;
+  --color-accent-strong: #2b77b1;
+  --color-accent-soft: #deeff7;
   --color-leaf: #106e77;
   --color-focus: #2f6ede;
   --shadow-card: 0 1px 2px rgb(16 40 45 / 6%), 0 12px 28px rgb(16 40 45 / 6%);
@@ -114,9 +114,9 @@
   --color-ink: #e6eff5;
   --color-ink-muted: #92a7b3;
   --color-line: #263845;
-  --color-accent: #ef8663;
-  --color-accent-strong: #f6a184;
-  --color-accent-soft: #2c1a13;
+  --color-accent: #45cdd6;
+  --color-accent-strong: #6bd6de;
+  --color-accent-soft: #10282c;
   --color-leaf: #46b0b8;
   --color-focus: #8bb4ff;
   --shadow-card: 0 1px 2px rgb(0 0 0 / 45%), 0 14px 30px rgb(0 0 0 / 40%);
