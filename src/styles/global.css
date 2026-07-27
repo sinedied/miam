@@ -122,37 +122,37 @@
   --shadow-card: 0 1px 2px rgb(0 0 0 / 45%), 0 14px 30px rgb(0 0 0 / 40%);
 }
 
-/* Slate palette — light (near-white neutral gray, slate-blue brand + amber accent). */
+/* Slate palette — light (near-white neutral gray, slate-blue brand + blue-gray accent). */
 :root[data-theme="slate"] {
   color-scheme: light;
-  --color-canvas: #f8f9fa;
-  --color-surface: #ffffff;
-  --color-surface-strong: #eef0f2;
-  --color-ink: #1f242b;
-  --color-ink-muted: #5b626d;
-  --color-line: #e6e8ec;
-  --color-accent: #b3792a;
-  --color-accent-strong: #98631d;
-  --color-accent-soft: #f1e8d6;
-  --color-leaf: #4a5a86;
-  --color-focus: #2f6ede;
+  --color-canvas: #f4f6f8;
+  --color-surface: #fcfeff;
+  --color-surface-strong: #e6e9eb;
+  --color-ink: #171a1d;
+  --color-ink-muted: #4c5053;
+  --color-line: #d9dde0;
+  --color-accent: #4a5762;
+  --color-accent-strong: #303c47;
+  --color-accent-soft: #e6eaee;
+  --color-leaf: #435e93;
+  --color-focus: #816d00;
   --shadow-card: 0 1px 2px rgb(30 33 40 / 6%), 0 12px 28px rgb(30 33 40 / 6%);
 }
 
 /* Slate palette — dark. */
 :root[data-theme="slate"][data-mode="dark"] {
   color-scheme: dark;
-  --color-canvas: #121316;
-  --color-surface: #1a1c20;
-  --color-surface-strong: #24272d;
-  --color-ink: #e8eaee;
-  --color-ink-muted: #9aa0ab;
-  --color-line: #2e3138;
-  --color-accent: #d99f52;
-  --color-accent-strong: #e8b56b;
-  --color-accent-soft: #2a2013;
-  --color-leaf: #8695c1;
-  --color-focus: #8bb4ff;
+  --color-canvas: #0f1112;
+  --color-surface: #1a1b1c;
+  --color-surface-strong: #26292b;
+  --color-ink: #ebf0f5;
+  --color-ink-muted: #9fa5aa;
+  --color-line: #313538;
+  --color-accent: #9fadb9;
+  --color-accent-strong: #bbc9d7;
+  --color-accent-soft: #212428;
+  --color-leaf: #b4a99e;
+  --color-focus: #d0b74a;
   --shadow-card: 0 1px 2px rgb(0 0 0 / 45%), 0 14px 30px rgb(0 0 0 / 40%);
 }
 
