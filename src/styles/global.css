@@ -156,37 +156,37 @@
   --shadow-card: 0 1px 2px rgb(0 0 0 / 45%), 0 14px 30px rgb(0 0 0 / 40%);
 }
 
-/* Berry palette — light (plum brand + sage-green accent, near-white warm canvas). */
+/* Berry palette — light (plum brand + berry accent on a warm cream canvas). */
 :root[data-theme="berry"] {
   color-scheme: light;
-  --color-canvas: #faf6f8;
-  --color-surface: #ffffff;
-  --color-surface-strong: #f2e9ee;
-  --color-ink: #271d24;
-  --color-ink-muted: #6b5b64;
-  --color-line: #ece1e7;
-  --color-accent: #4d8a63;
-  --color-accent-strong: #3c7052;
-  --color-accent-soft: #dfeae2;
+  --color-canvas: #fff3ed;
+  --color-surface: #fffdfc;
+  --color-surface-strong: #f7e4da;
+  --color-ink: #4b3427;
+  --color-ink-muted: #7d5f4e;
+  --color-line: #efd7ca;
+  --color-accent: #9b3d6b;
+  --color-accent-strong: #7d1a4f;
+  --color-accent-soft: #ffe0ec;
   --color-leaf: #9b3d6b;
-  --color-focus: #2f6ede;
+  --color-focus: #008380;
   --shadow-card: 0 1px 2px rgb(42 30 38 / 6%), 0 12px 28px rgb(42 30 38 / 6%);
 }
 
 /* Berry palette — dark. */
 :root[data-theme="berry"][data-mode="dark"] {
   color-scheme: dark;
-  --color-canvas: #161016;
-  --color-surface: #201823;
-  --color-surface-strong: #2c202c;
-  --color-ink: #f3e8ef;
-  --color-ink-muted: #b199a6;
-  --color-line: #382936;
-  --color-accent: #72b189;
-  --color-accent-strong: #8fcaa2;
-  --color-accent-soft: #16231a;
+  --color-canvas: #190d07;
+  --color-surface: #211914;
+  --color-surface-strong: #36241a;
+  --color-ink: #e0bba7;
+  --color-ink-muted: #a98069;
+  --color-line: #462e20;
+  --color-accent: #eb85b3;
+  --color-accent-strong: #ffaace;
+  --color-accent-soft: #351a26;
   --color-leaf: #d07bab;
-  --color-focus: #8bb4ff;
+  --color-focus: #00d2ce;
   --shadow-card: 0 1px 2px rgb(0 0 0 / 45%), 0 14px 30px rgb(0 0 0 / 40%);
 }
 
