@@ -305,6 +305,16 @@ export class RecipeDetail extends LitElement {
         color: var(--color-accent-strong);
       }
 
+      .markdown img {
+        display: block;
+        width: auto;
+        max-width: min(100%, 20rem);
+        height: auto;
+        margin: var(--space-4) 0;
+        border: 1px solid var(--color-line);
+        border-radius: var(--radius-md);
+      }
+
       @media (max-width: 58rem) {
         .layout {
           grid-template-columns: 1fr;

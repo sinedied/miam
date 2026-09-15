@@ -32,7 +32,9 @@ Guidance for coding agents working on **miam**, a read-only MVP family recipe ca
 
 - Recipe Markdown files live in `recipes/*.md`; their images live in `recipes/images/`, referenced
   from front matter as `image.path: images/<file>` (repository-local, no subfolders/URLs). Images
-  are imported by the Vite plugin as hashed, base-path-safe assets.
+  are imported by the Vite plugin as hashed, base-path-safe assets. Markdown **body images** are
+  also allowed (e.g. `![alt](images/<file>)`) under the same repository-local rules, and are routed
+  through the same asset pipeline.
 - `language` is an **optional** front-matter field (validated only when present); it is not
   displayed in the UI.
 - Recipe files (Markdown + YAML frontmatter) must be **strictly validated** on load (required fields, types, allowed values, image references, etc.).

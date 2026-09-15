@@ -78,6 +78,12 @@ export interface Recipe extends RecipeFrontmatter {
   rawBody: string;
   /** Markdown body rendered to HTML (instructions + optional notes). */
   html: string;
+  /**
+   * Repository-local image paths referenced from the Markdown body (e.g.
+   * "images/foo.jpg"), deduplicated and in order of first appearance. These are
+   * routed through the Vite asset pipeline just like the front-matter image.
+   */
+  bodyImages: string[];
 }
 
 /** A single validation problem, identified by file and (when applicable) field. */
@@ -128,9 +134,9 @@ function isSafeMarkdownLink(href: string): boolean {
   return !scheme || ["http", "https", "mailto"].includes(scheme.toLowerCase());
 }
 
-function validateMarkdownTokens(value: unknown): string[] {
+function validateMarkdownTokens(value: unknown, bodyImages: string[]): string[] {
   if (Array.isArray(value)) {
-    return value.flatMap(validateMarkdownTokens);
+    return value.flatMap((item) => validateMarkdownTokens(item, bodyImages));
   }
   if (typeof value !== "object" || value === null) {
     return [];
@@ -144,11 +150,19 @@ function validateMarkdownTokens(value: unknown): string[] {
     return [`contains an unsafe link destination: "${token.href}"`];
   }
   if (token.type === "image") {
-    // Only the front-matter image is routed through the asset pipeline; body
-    // images would not be bundled/served, so they are rejected outright.
-    return ["must not embed images in the body; use the recipe's image field"];
+    // Body images are allowed only when they reference a repository-local file
+    // under images/, so the Vite asset pipeline can bundle and serve them (the
+    // same safety rules as the front-matter image apply: no URLs, no absolute
+    // paths, no traversal). Anything else is rejected outright.
+    const href = typeof token.href === "string" ? token.href : "";
+    const pathIssues = validateImagePath(href, "body image");
+    if (pathIssues.length > 0) {
+      return pathIssues;
+    }
+    bodyImages.push(href);
+    return [];
   }
-  return Object.values(token).flatMap(validateMarkdownTokens);
+  return Object.values(token).flatMap((item) => validateMarkdownTokens(item, bodyImages));
 }
 
 /**
@@ -390,10 +404,11 @@ export function parseRecipeMarkdown(fileName: string, raw: string): Recipe {
   const ingredients = validateIngredients(data.ingredients, pushIssue);
 
   const rawBody = parsed.content.trim();
+  const bodyImages: string[] = [];
   if (rawBody.length === 0) {
     pushIssue("body", "must contain Markdown instructions (and optionally notes)");
   } else {
-    for (const issue of validateMarkdownTokens(marked.lexer(rawBody))) {
+    for (const issue of validateMarkdownTokens(marked.lexer(rawBody), bodyImages)) {
       pushIssue("body", issue);
     }
   }
@@ -421,6 +436,7 @@ export function parseRecipeMarkdown(fileName: string, raw: string): Recipe {
     ingredients,
     rawBody,
     html,
+    bodyImages: [...new Set(bodyImages)],
   };
 }
 
@@ -518,15 +534,25 @@ export function loadRecipes(options: LoadRecipesOptions = {}): Recipe[] {
   }));
 
   const recipes = parseRecipes(files);
-  const missingImages = recipes
-    .filter(
-      (recipe) => recipe.image !== undefined && !fs.existsSync(path.join(dir, recipe.image.path)),
-    )
-    .map((recipe) => ({
-      file: recipe.file,
-      field: "image.path",
-      message: `referenced image does not exist under the recipes directory: "${recipe.image?.path}"`,
-    }));
+  const missingImages: RecipeContentIssue[] = [];
+  for (const recipe of recipes) {
+    if (recipe.image !== undefined && !fs.existsSync(path.join(dir, recipe.image.path))) {
+      missingImages.push({
+        file: recipe.file,
+        field: "image.path",
+        message: `referenced image does not exist under the recipes directory: "${recipe.image.path}"`,
+      });
+    }
+    for (const bodyImage of recipe.bodyImages) {
+      if (!fs.existsSync(path.join(dir, bodyImage))) {
+        missingImages.push({
+          file: recipe.file,
+          field: "body",
+          message: `referenced body image does not exist under the recipes directory: "${bodyImage}"`,
+        });
+      }
+    }
+  }
 
   if (missingImages.length > 0) {
     throw new RecipeContentError(missingImages);

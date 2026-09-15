@@ -63,6 +63,18 @@ describe("recipe content client adapter", () => {
     expect(moduleSource).toMatch(/image: img\d+/);
   });
 
+  it("routes local body images through the asset pipeline", () => {
+    const resolvedId = resolveRecipeModuleId(RECIPE_CONTENT_MODULE_ID);
+    const moduleSource = resolvedId ? (loadRecipeModule(resolvedId) ?? "") : "";
+
+    // At least one recipe embeds a body image in its notes.
+    expect(moduleSource).toMatch(/import bodyImg\d+_\d+ from "\/recipes\/images\//);
+    // Body-image srcs are rewritten to the imported asset via concatenation,
+    // so no raw "src=\"images/…\"" path should survive in the emitted module.
+    expect(moduleSource).toContain('" + bodyImg');
+    expect(moduleSource).not.toMatch(/src=\\"images\//);
+  });
+
   it("recognizes recipe Markdown files independent of relative path syntax", () => {
     expect(isRecipeContentFile(`${DEFAULT_RECIPES_DIR}/tarte-tomate.md`)).toBe(true);
     expect(isRecipeContentFile(`${DEFAULT_RECIPES_DIR}/notes.txt`)).toBe(false);

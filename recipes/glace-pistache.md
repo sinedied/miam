@@ -1,6 +1,6 @@
 ---
 title: Glace à la pistache
-description: Une glace onctueuse et gourmande qui a tout d'une grande, sans jamais durcir au congélateur.
+description: "Plus crémeuse et plus intense que chez le glacier : la meilleure glace à la pistache que vous goûterez."
 language: fr
 image:
   path: images/glace-pistache.jpg
@@ -26,7 +26,7 @@ ingredients:
   - name: sucre
     quantity: 30
     unit: g
-  - name: crème de pistache
+  - name: crème de pistache (au moins 40% de pistaches)
     quantity: 200
     unit: g
 ---
@@ -42,3 +42,6 @@ ingredients:
 ## Notes
 
 - Attention lors de la cuisson, le mélange accroche facilement! Sur ma plaque à induction, j'ai fait chauffer à 6 le mélange, puis baissé à 5 une fois les jaunes ajoutés. Il faut fouetter sans cesse pour éviter que ça accroche.
+- Crème de pistache utilisée : une crème de pistache italienne à tartiner (« crema spalmabile di pistacchio »), en pot de 190 g. Prenez-en une riche en pistaches (au moins 40%) et peu sucrée pour un goût bien intense.
+
+![Pot de crème de pistache italienne « crema spalmabile di pistacchio », 190 g](images/glace-pistache-creme.jpg)

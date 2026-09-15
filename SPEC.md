@@ -222,9 +222,11 @@ decorative placeholder in the catalog card and detail hero. When present, both
 - Required, non-empty — the cooking **instructions** (optionally a "Notes"
   section).
 - Rendered to HTML at build time.
-- Restricted for safety: **no raw HTML**, **no embedded body images** (use the
-  `image` field instead), and **no unsafe link destinations** (only
-  `http`, `https`, `mailto`, or relative links allowed).
+- Restricted for safety: **no raw HTML** and **no unsafe link destinations**
+  (only `http`, `https`, `mailto`, or relative links allowed). **Body images are
+  allowed** but must reference a repository-local file under `images/` (same
+  safety rules as the `image` field — no URLs, absolute paths, or traversal);
+  they are routed through the Vite asset pipeline and must exist on disk.
 
 **Slug**
 

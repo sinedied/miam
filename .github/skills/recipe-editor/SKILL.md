@@ -91,8 +91,10 @@ Frontmatter fields — required unless marked optional:
 
 Body (after frontmatter): required, non-empty Markdown — the numbered
 instructions, plus an optional `## Notes` section **only** when a note adds real
-value. **No raw HTML, no images in the body**, and links may only be
-`http`/`https`/`mailto`/relative.
+value. **No raw HTML.** **Body images are allowed** via Markdown
+(`![alt](images/<file>)`) but must be repository-local under `images/` (same
+rules as the `image` field — no URLs, absolute paths, or `..`, must exist on
+disk); use a non-empty `alt`. Links may only be `http`/`https`/`mailto`/relative.
 
 ## Gotchas
 

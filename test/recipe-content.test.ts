@@ -536,10 +536,37 @@ describe("parseRecipeMarkdown - trusted Markdown boundary", () => {
     ["an entity-obfuscated JavaScript link", "[open me](jav&#x61;script:alert(1))"],
     ["a data link", "[open me](data:text/html,unsafe)"],
     ["a remote image", "![tracking pixel](https://example.com/pixel.png)"],
-    ["a repository-local body image", "![Pancakes](images/pancake-stack.svg)"],
+    ["an absolute body image", "![Pancakes](/etc/passwd.png)"],
+    ["a traversal body image", "![Pancakes](images/../../secret.png)"],
+    ["a body image outside images/", "![Pancakes](assets/pancake-stack.svg)"],
+    ["a body image with no valid extension", "![Pancakes](images/pancake-stack.txt)"],
   ])("rejects %s", (_label, markdown) => {
     const raw = validFrontmatter.replace("1. Whisk the dry ingredients together.", markdown);
     expect(() => parseRecipeMarkdown("unsafe-link.md", raw)).toThrowError(/body/);
+  });
+
+  it("allows a repository-local body image and collects it in bodyImages", () => {
+    const raw = validFrontmatter.replace(
+      "1. Whisk the dry ingredients together.",
+      "![Pancakes](images/pancake-stack.svg)",
+    );
+    const recipe = parseRecipeMarkdown("body-image.md", raw);
+    expect(recipe.bodyImages).toEqual(["images/pancake-stack.svg"]);
+    expect(recipe.html).toContain('src="images/pancake-stack.svg"');
+  });
+
+  it("deduplicates repeated body images", () => {
+    const raw = validFrontmatter.replace(
+      "1. Whisk the dry ingredients together.",
+      "![One](images/pancake-stack.svg)\n\n![Two](images/pancake-stack.svg)",
+    );
+    const recipe = parseRecipeMarkdown("body-image-dup.md", raw);
+    expect(recipe.bodyImages).toEqual(["images/pancake-stack.svg"]);
+  });
+
+  it("reports no body images for a plain recipe", () => {
+    const recipe = parseRecipeMarkdown("pancake-stack.md", validFrontmatter);
+    expect(recipe.bodyImages).toEqual([]);
   });
 
   it("allows safe HTTPS and mailto links in the body", () => {
@@ -628,6 +655,33 @@ describe("loadRecipes - fixture directories", () => {
 
     try {
       expect(() => loadRecipes({ dir: recipesDir })).toThrowError(/image\.path.*does not exist/s);
+    } finally {
+      fs.rmSync(fixtureRoot, { recursive: true, force: true });
+    }
+  });
+
+  it("rejects a recipe whose referenced body image file is missing", () => {
+    const fixtureRoot = fs.mkdtempSync(path.join(os.tmpdir(), "miam-recipes-"));
+    const recipesDir = path.join(fixtureRoot, "recipes");
+    fs.mkdirSync(recipesDir);
+    const raw = withFrontmatter(
+      `title: Body Image
+description: A recipe that references a missing body image.
+prepTime: 10
+servings: 2
+cuisine: Test
+tags:
+  - test
+ingredients:
+  - name: water`,
+      "\n## Instructions\n\nDo it.\n\n![A photo](images/missing.jpg)\n",
+    );
+    fs.writeFileSync(path.join(recipesDir, "body-image.md"), raw);
+
+    try {
+      expect(() => loadRecipes({ dir: recipesDir })).toThrowError(
+        /body.*body image does not exist/s,
+      );
     } finally {
       fs.rmSync(fixtureRoot, { recursive: true, force: true });
     }

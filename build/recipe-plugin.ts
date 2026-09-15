@@ -44,15 +44,29 @@ export function loadRecipeModule(id: string): string | undefined {
   if (id !== RESOLVED_MODULE_ID) {
     return undefined;
   }
-  const recipes = loadRecipes().map(toClientRecipe);
+  const contentRecipes = loadRecipes();
   const imports: string[] = [];
-  const entries = recipes.map((recipe, index) => {
-    const { image, ...rest } = recipe;
-    if (image === undefined) {
-      return JSON.stringify(rest);
+  const entries = contentRecipes.map((contentRecipe, index) => {
+    const { image, instructionsHtml, ...rest } = toClientRecipe(contentRecipe);
+
+    // Rewrite each local body-image src in the rendered HTML to a hashed asset
+    // import, so body images are bundled and served with a base-path-safe URL,
+    // exactly like the front-matter image. `bodyImages` is validated upstream to
+    // only ever contain repository-local "images/…" paths.
+    let htmlExpr = JSON.stringify(instructionsHtml);
+    contentRecipe.bodyImages.forEach((imagePath, imageIndex) => {
+      const varName = `bodyImg${index}_${imageIndex}`;
+      imports.push(`import ${varName} from ${JSON.stringify(`/recipes/${imagePath}`)};`);
+      const encodedAttr = JSON.stringify(`src="${imagePath}"`).slice(1, -1);
+      htmlExpr = htmlExpr.split(encodedAttr).join(`src=\\"" + ${varName} + "\\"`);
+    });
+
+    const parts = [`...${JSON.stringify(rest)}`, `instructionsHtml: ${htmlExpr}`];
+    if (image !== undefined) {
+      imports.push(`import img${index} from ${JSON.stringify(`/recipes/${image}`)};`);
+      parts.push(`image: img${index}`);
     }
-    imports.push(`import img${index} from ${JSON.stringify(`/recipes/${image}`)};`);
-    return `{ ...${JSON.stringify(rest)}, image: img${index} }`;
+    return `{ ${parts.join(", ")} }`;
   });
   return `${imports.join("\n")}\nexport const recipes = [${entries.join(",")}];`;
 }
